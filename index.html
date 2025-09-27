@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fancode Stream</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+  <style>
+    :root {
+      --primary: #1a73e8; /* Fancode blue */
+      --primary-dark: #0d5bbc; /* Darker blue */
+      --secondary: #ff6d00; /* Fancode orange */
+      --accent: #ff9100; /* Lighter orange */
+    }
+    
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: #121212;
+      color: #f8f9fa;
+      min-height: 100vh;
+      transition: all 0.3s ease;
+    }
+    
+    /* Card Styles */
+    .card {
+      transition: all 0.3s ease;
+      background: #1e1e1e;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+      border: 1px solid #333;
+      animation: fadeInUp 0.5s ease forwards;
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    
+    @keyframes fadeInUp {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+    }
+    
+    /* Text Colors */
+    .text-dark {
+      color: #f8f9fa !important;
+    }
+    
+    .text-muted {
+      color: #adb5bd !important;
+    }
+    
+    /* Header Styles */
+    .header-glow {
+      background: linear-gradient(90deg, var(--primary), var(--primary-dark));
+      box-shadow: 0 4px 12px rgba(26, 115, 232, 0.2);
+    }
+    
+    /* Rest of your existing styles... */
+    .badge {
+      font-size: 12px;
+      font-weight: 600;
+      padding: 4px 8px;
+      border-radius: 6px;
+      background: rgba(0, 0, 0, 0.7);
+      color: white;
+    }
+    
+    .status-live {
+      background: linear-gradient(45deg, #e53935, #c62828);
+      color: #fff;
+      animation: pulse 2s infinite;
+    }
+    
+    .status-upcoming {
+      background: linear-gradient(45deg, var(--secondary), var(--accent));
+      color: #fff;
+    }
+    
+    @keyframes pulse {
+      0% { box-shadow: 0 0 0 0 rgba(229, 57, 53, 0.4); }
+      70% { box-shadow: 0 0 0 8px rgba(229, 57, 53, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(229, 57, 53, 0); }
+    }
+    
+    .tab {
+      position: relative;
+      padding: 8px 16px;
+      transition: all 0.2s ease;
+      color: #adb5bd;
+      font-weight: 500;
+    }
+    
+    .tab::after {
+      content: "";
+      position: absolute;
+      bottom: -4px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 0;
+      height: 3px;
+      background: var(--primary);
+      transition: width 0.2s ease;
+    }
+    
+    .tab:hover {
+      color: var(--primary);
+    }
+    
+    .tab.active {
+      color: var(--primary);
+      font-weight: 600;
+    }
+    
+    .tab.active::after {
+      width: 80%;
+    }
+    
+    .popup-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
+      z-index: 100;
+    }
+    
+    .popup-overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+    
+    .popup {
+      background: #1e1e1e;
+      padding: 30px;
+      border-radius: 16px;
+      text-align: center;
+      width: 90%;
+      max-width: 400px;
+      transform: translateY(20px);
+      transition: transform 0.3s ease;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    }
+    
+    .popup-overlay.active .popup {
+      transform: translateY(0);
+    }
+    
+    .popup h2 {
+      font-size: 1.5rem;
+      margin-bottom: 1.5rem;
+      color: var(--primary);
+    }
+    
+    .btn {
+      display: block;
+      width: 100%;
+      padding: 14px;
+      margin: 12px 0;
+      border-radius: 12px;
+      font-size: 15px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      cursor: pointer;
+      color: #fff;
+      border: none;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    }
+    
+    .btn:active {
+      transform: translateY(0);
+    }
+    
+    .btn-worldwide {
+      background: linear-gradient(45deg, var(--primary), var(--primary-dark));
+    }
+    
+    .btn-india {
+      background: linear-gradient(45deg, var(--secondary), var(--accent));
+    }
+    
+    .loading {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 200px;
+    }
+    
+    .loading-spinner {
+      width: 50px;
+      height: 50px;
+      border: 5px solid rgba(26, 115, 232, 0.1);
+      border-radius: 50%;
+      border-top-color: var(--primary);
+      animation: spin 1s linear infinite;
+    }
+    
+    @keyframes spin {
+      100% { transform: rotate(360deg); }
+    }
+    
+    .watch-btn {
+      background: linear-gradient(45deg, var(--primary), var(--primary-dark));
+      color: white;
+      transition: all 0.3s ease;
+    }
+    
+    .watch-btn:hover {
+      background: linear-gradient(45deg, var(--primary-dark), var(--primary));
+    }
+    
+    .text-primary {
+      color: var(--primary);
+    }
+    
+    .text-secondary {
+      color: var(--secondary);
+    }
+  </style>
+</head>
+<body class="animate__animated animate__fadeIn">
+  <!-- Navbar -->
+  <header class="header-glow text-white p-4 flex justify-between items-center">
+    <h1 class="text-xl font-bold flex items-center space-x-2">
+      <span class="text-2xl">📺</span>
+      <span>Fancode Stream</span>
+    </h1>
+    <div class="flex items-center space-x-4">
+      <span id="lastUpdate" class="text-sm bg-white bg-opacity-20 px-3 py-1 rounded-full"></span>
+    </div>
+  </header>
+
+  <!-- Tabs -->
+  <div class="flex justify-center mt-6 space-x-6 font-medium bg-gray-800 py-3 mx-4 rounded-lg shadow-sm">
+    <button onclick="filterMatches('all')" class="tab active">All Matches</button>
+    <button onclick="filterMatches('LIVE')" class="tab">Live Now</button>
+    <button onclick="filterMatches('UPCOMING')" class="tab">Upcoming</button>
+  </div>
+
+  <!-- Matches Grid -->
+  <div id="matches" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 p-6">
+    <div class="loading">
+      <div class="loading-spinner"></div>
+    </div>
+  </div>
+
+  <!-- Popup -->
+  <div id="popupOverlay" class="popup-overlay">
+    <div class="popup">
+      <h2 class="text-lg font-bold mb-4 text-primary">Choose Stream</h2>
+      <button class="btn btn-worldwide" id="worldwideBtn">🌍 Worldwide Stream</button>
+      <button class="btn btn-india" id="indiaBtn">🇮🇳 India Stream</button>
+      <button class="mt-4 text-muted hover:text-white transition-colors" onclick="closePopup()">Close</button>
+    </div>
+  </div>
+
+<script>
+const _0x284a7b=_0x5a4b;(function(_0x470f04,_0x4d372b){const _0x19aeeb=_0x5a4b,_0xd51aab=_0x470f04();while(!![]){try{const _0x2d91b3=-parseInt(_0x19aeeb(0x1ea))/(-0xb1+-0x6f0+-0x1*-0x7a2)*(-parseInt(_0x19aeeb(0x1aa))/(0x52*-0x4f+0x1*0x21ad+-0x1*0x85d))+parseInt(_0x19aeeb(0x275))/(-0x2*-0x3ab+0x4c*0x3e+-0x19bb)*(-parseInt(_0x19aeeb(0x260))/(-0x574+-0x22b2+0x282a))+parseInt(_0x19aeeb(0x21f))/(0x13f+-0x221f*0x1+0x20e5)+parseInt(_0x19aeeb(0x1c3))/(0x1*-0xeaa+0x1c7d+-0xdcd)*(parseInt(_0x19aeeb(0x20d))/(0xa9c+0xb2b*0x3+-0x26*0x129))+-parseInt(_0x19aeeb(0x228))/(0x177b*0x1+-0x2*0xfd1+-0x5*-0x1a3)+parseInt(_0x19aeeb(0x242))/(0x1914+-0x2*0xc64+-0x43)*(-parseInt(_0x19aeeb(0x274))/(0x24ef*0x1+0x40*0x81+-0x4525))+-parseInt(_0x19aeeb(0x1e1))/(-0xfa8*-0x2+-0x1fbb*0x1+0x76)*(-parseInt(_0x19aeeb(0x25c))/(0xc64*-0x1+0x140e+-0x145*0x6));if(_0x2d91b3===_0x4d372b)break;else _0xd51aab['push'](_0xd51aab['shift']());}catch(_0x15a279){_0xd51aab['push'](_0xd51aab['shift']());}}}(_0x22d6,-0x1d884*-0x1+0x35b*0x55b+-0x4f*0x1582));const matchesContainer=document[_0x284a7b(0x1c6)+_0x284a7b(0x211)](_0x284a7b(0x24d)),popupOverlay=document[_0x284a7b(0x1c6)+_0x284a7b(0x211)](_0x284a7b(0x1e3)+'ay'),worldwideBtn=document[_0x284a7b(0x1c6)+_0x284a7b(0x211)](_0x284a7b(0x258)+'tn'),indiaBtn=document[_0x284a7b(0x1c6)+_0x284a7b(0x211)](_0x284a7b(0x1e8)),lastUpdate=document[_0x284a7b(0x1c6)+_0x284a7b(0x211)](_0x284a7b(0x218));let selectedAdfreeUrl='',allMatches=[];const worldwidePlayerUrl=_0x284a7b(0x223)+_0x284a7b(0x269),indiaPlayerUrl=_0x284a7b(0x1bc)+_0x284a7b(0x257);function openPopup(_0x4adb1f){const _0x53fdb2=_0x284a7b,_0x1e9477={'oBukY':_0x53fdb2(0x232)};selectedAdfreeUrl=_0x4adb1f,popupOverlay[_0x53fdb2(0x1e7)][_0x53fdb2(0x23d)](_0x1e9477[_0x53fdb2(0x201)]);}function closePopup(){const _0x1c5869=_0x284a7b,_0x44e504={'QpqJn':_0x1c5869(0x232)};popupOverlay[_0x1c5869(0x1e7)][_0x1c5869(0x24b)](_0x44e504[_0x1c5869(0x1c5)]);}function _0x5a4b(_0x401c2d,_0x4a99f3){const _0x4bb1e9=_0x22d6();return _0x5a4b=function(_0x31b053,_0x596fc5){_0x31b053=_0x31b053-(0xd94+0x2*-0x662+0xd8);let _0x1c75e2=_0x4bb1e9[_0x31b053];return _0x1c75e2;},_0x5a4b(_0x401c2d,_0x4a99f3);}worldwideBtn[_0x284a7b(0x1e5)]=()=>{const _0x24092d=_0x284a7b,_0x2da195={'bAver':function(_0x27ab1b,_0x2a4ab8){return _0x27ab1b(_0x2a4ab8);},'GJxuc':_0x24092d(0x1ff),'AhjwF':function(_0x30cd83){return _0x30cd83();}};window[_0x24092d(0x216)](worldwidePlayerUrl+_0x24092d(0x1d5)+_0x2da195[_0x24092d(0x1b3)](encodeURIComponent,selectedAdfreeUrl),_0x2da195[_0x24092d(0x1ad)]),_0x2da195[_0x24092d(0x1b1)](closePopup);},indiaBtn[_0x284a7b(0x1e5)]=()=>{const _0x4006b5=_0x284a7b,_0x22d85c={'FHHpT':function(_0x531e98,_0x4760f2){return _0x531e98(_0x4760f2);},'dBBdp':_0x4006b5(0x1ff),'mNLto':function(_0x49f865){return _0x49f865();}};window[_0x4006b5(0x216)](indiaPlayerUrl+_0x4006b5(0x1d5)+_0x22d85c[_0x4006b5(0x1c0)](encodeURIComponent,selectedAdfreeUrl),_0x22d85c[_0x4006b5(0x263)]),_0x22d85c[_0x4006b5(0x1e9)](closePopup);};function renderMatches(_0x2b697f=_0x284a7b(0x229)){const _0x9d689b=_0x284a7b,_0x3b2c80={'zOHxG':_0x9d689b(0x1f8),'ASUap':_0x9d689b(0x252),'CiUZA':function(_0x3b3c9d,_0x2e1293){return _0x3b3c9d*_0x2e1293;},'pnikP':function(_0xf3659d,_0x19de58){return _0xf3659d===_0x19de58;},'ziNPf':_0x9d689b(0x200),'ktBxB':_0x9d689b(0x1dc)+'e','EpdaP':_0x9d689b(0x1b2)+_0x9d689b(0x1d0),'mzmbD':_0x9d689b(0x261),'fzZaY':_0x9d689b(0x20c)+_0x9d689b(0x209)+_0x9d689b(0x1f2)+_0x9d689b(0x238),'YKAlX':function(_0x3d0f1e,_0x4b36a4){return _0x3d0f1e===_0x4b36a4;},'jEsRG':_0x9d689b(0x243)+'ve','zcJxI':_0x9d689b(0x22e),'SAOfV':function(_0x33c451,_0x3d6cd0){return _0x33c451!==_0x3d6cd0;},'DCxWZ':_0x9d689b(0x229),'xbjro':function(_0xcdc1d9,_0x5055b5){return _0xcdc1d9===_0x5055b5;}};matchesContainer[_0x9d689b(0x253)]='';let _0x387724=allMatches;_0x3b2c80[_0x9d689b(0x1c9)](_0x2b697f,_0x3b2c80[_0x9d689b(0x1f5)])&&(_0x387724=allMatches[_0x9d689b(0x21c)](_0x491460=>_0x491460[_0x9d689b(0x23b)]===_0x2b697f));if(_0x3b2c80[_0x9d689b(0x240)](_0x387724[_0x9d689b(0x224)],-0x293*-0xd+-0x2320+0x1a9)){matchesContainer[_0x9d689b(0x253)]=_0x9d689b(0x1b0)+_0x9d689b(0x1bf)+_0x9d689b(0x256)+_0x9d689b(0x250)+_0x9d689b(0x22a)+_0x9d689b(0x206)+_0x9d689b(0x1e0)+_0x9d689b(0x1fb)+_0x9d689b(0x26c)+_0x9d689b(0x1ab)+_0x9d689b(0x21b)+_0x9d689b(0x247)+_0x9d689b(0x251)+_0x9d689b(0x204)+_0x9d689b(0x1a9)+_0x9d689b(0x264)+_0x9d689b(0x26a)+_0x9d689b(0x21a)+_0x9d689b(0x267)+_0x9d689b(0x270)+_0x9d689b(0x230)+_0x9d689b(0x235)+_0x9d689b(0x1f6)+_0x9d689b(0x265)+_0x9d689b(0x276)+_0x9d689b(0x1db);return;}_0x387724[_0x9d689b(0x1c7)]((_0x13a5e6,_0x2c3a06)=>{const _0x171f58=_0x9d689b,_0x3f971b=document[_0x171f58(0x222)+_0x171f58(0x246)](_0x3b2c80[_0x171f58(0x23e)]);_0x3f971b[_0x171f58(0x26d)]=_0x3b2c80[_0x171f58(0x1d3)],_0x3f971b[_0x171f58(0x248)][_0x171f58(0x20f)+_0x171f58(0x273)]=_0x3b2c80[_0x171f58(0x262)](_0x2c3a06,0x9f5*-0x2+-0xd37+0xb0b*0x3+0.05)+'s',_0x3f971b[_0x171f58(0x253)]=_0x171f58(0x1b0)+_0x171f58(0x21e)+_0x171f58(0x21d)+_0x171f58(0x1fd)+_0x171f58(0x1f9)+_0x13a5e6[_0x171f58(0x237)]+_0x171f58(0x271)+_0x13a5e6[_0x171f58(0x255)]+(_0x171f58(0x206)+_0x171f58(0x1bd)+_0x171f58(0x234)+_0x171f58(0x25a)+_0x171f58(0x1ac)+_0x171f58(0x1fe))+_0x13a5e6[_0x171f58(0x1f1)+_0x171f58(0x24e)]+(_0x171f58(0x1ca)+_0x171f58(0x221)+_0x171f58(0x1d2)+_0x171f58(0x231)+_0x171f58(0x1ce)+_0x171f58(0x22b))+(_0x3b2c80[_0x171f58(0x1d6)](_0x13a5e6[_0x171f58(0x23b)],_0x3b2c80[_0x171f58(0x25b)])?_0x3b2c80[_0x171f58(0x1cf)]:_0x3b2c80[_0x171f58(0x24c)])+'\x22>'+_0x13a5e6[_0x171f58(0x23b)]+(_0x171f58(0x1ca)+_0x171f58(0x207)+_0x171f58(0x1b0)+_0x171f58(0x25e)+_0x171f58(0x23f)+_0x171f58(0x215)+_0x171f58(0x1c1)+_0x171f58(0x25d)+_0x171f58(0x1cd))+_0x13a5e6[_0x171f58(0x1a8)]+(_0x171f58(0x1c4)+_0x171f58(0x23c)+_0x171f58(0x1ef)+_0x171f58(0x1fa)+_0x171f58(0x212)+_0x171f58(0x26e)+'\x22>')+_0x13a5e6[_0x171f58(0x255)]+(_0x171f58(0x244)+_0x171f58(0x1b4)+_0x171f58(0x1c1)+_0x171f58(0x25d)+_0x171f58(0x1eb)+'\x20')+_0x13a5e6[_0x171f58(0x1b5)]+(_0x171f58(0x25f)+_0x171f58(0x1e2)+_0x171f58(0x1b6)+_0x171f58(0x268)+_0x171f58(0x1ba)+_0x171f58(0x22c)+_0x171f58(0x233))+(_0x3b2c80[_0x171f58(0x1d6)](_0x13a5e6[_0x171f58(0x23b)],_0x3b2c80[_0x171f58(0x25b)])?_0x3b2c80[_0x171f58(0x1d8)]:_0x3b2c80[_0x171f58(0x1e6)])+(_0x171f58(0x206)+_0x171f58(0x1ae))+(_0x3b2c80[_0x171f58(0x259)](_0x13a5e6[_0x171f58(0x23b)],_0x3b2c80[_0x171f58(0x25b)])?_0x3b2c80[_0x171f58(0x241)]:_0x3b2c80[_0x171f58(0x1ed)])+(_0x171f58(0x1d9)+_0x171f58(0x254)+_0x171f58(0x276)+_0x171f58(0x1db)),_0x3b2c80[_0x171f58(0x259)](_0x13a5e6[_0x171f58(0x23b)],_0x3b2c80[_0x171f58(0x25b)])&&(_0x3f971b[_0x171f58(0x1e5)]=()=>openPopup(_0x13a5e6[_0x171f58(0x1be)])),matchesContainer[_0x171f58(0x1bb)+'d'](_0x3f971b);});}function _0x22d6(){const _0x3e6c60=['hRpfb','bg-gray-70','1981021YrpZcj','tiSXZ','animationD','XoePx','ById','bold\x20mt-1\x20','com/drmliv','ad\x20matches','\x20\x20\x20<h3\x20cla','open','Updated:\x20','lastUpdate','p>\x0a\x20\x20\x20\x20\x20\x20<','\x20found</h3','</div>\x0a\x20\x20\x20','filter','elative\x22>\x0a','v\x20class=\x22r','421990mOaJmE','IaNoV','\x20\x20\x20\x20\x20\x20<spa','createElem','player_wor','length','div>\x0a\x20\x20\x20\x20\x20','e\x20time','se\x20try\x20aga','689600RASpBS','all','nter\x20py-10','2\x20badge\x20','ed-lg\x20font','ercontent.','🔔\x20Upcoming','Cycfx','text-muted','bsolute\x20to','active','-semibold\x20','ss=\x22absolu','\x22>Try\x20a\x20di','animate__p','src','or-default','animate__a','textConten','status','\x20\x20\x20\x20<h2\x20cl','add','zOHxG','-4\x22>\x0a\x20\x20\x20\x20\x20','xbjro','jEsRG','1017clAiGT','▶\x20Watch\x20Li','</h2>\x0a\x20\x20\x20\x20','live-event','ent','\x20\x20\x20\x20\x20<h3\x20c','style','ss=\x22text-x','iled\x20to\x20lo','remove','EpdaP','matches','gory','.tab','ll\x20text-ce','lass=\x22text','card','innerHTML','/button>\x0a\x20','title','ol-span-fu','ia.html','worldwideB','YKAlX','te\x20top-2\x20l','ziNPf','180WQRehe','m\x20text-mut','v\x20class=\x22p','</p>\x0a\x20\x20\x20\x20\x20','4qdiFBj','watch-btn','CiUZA','dBBdp','xt-white\x22>','lter</p>\x0a\x20','kuCxz','>\x0a\x20\x20\x20\x20\x20\x20\x20\x20','full\x20mt-4\x20','ld.html','No\x20matches','last\x20updat','l\x20mb-4\x20tex','className','text-white','ulse','<p\x20class=\x22','\x22\x20alt=\x22','ss=\x22text-m','elay','93490rzPrqm','1367433VSiedf','\x20\x20\x20\x20\x20</div','event_name','emibold\x20te','2cHPpfV','t-muted\x22>😕','eft-2\x20badg','GJxuc','\x20\x20\x20','wCDtn','\x0a\x20\x20\x20\x20\x20\x20<di','AhjwF','status-upc','bAver','\x20\x20\x20\x20<p\x20cla','startTime','\x20class=\x22w-','mouseenter','mouseleave','kQfxy','py-3\x20round','appendChil','player_ind','\x20<span\x20cla','adfree_url','v\x20class=\x22c','FHHpT','ss=\x22text-s','stener','30CgNQmd','</h3>\x0a\x20\x20\x20\x20','QpqJn','getElement','forEach','l\x20font-sem','SAOfV','</span>\x0a\x20\x20','w.githubus','uted\x22>Plea','ed\x22>','p-2\x20right-','ktBxB','oming','t-muted⚠️</','n\x20class=\x22a','ASUap','nctve','?stream=','pnikP','-white\x22>Fa','mzmbD','\x0a\x20\x20\x20\x20\x20\x20\x20\x20<','OjcXb','>\x0a\x20\x20\x20\x20','status-liv','/div>\x0a\x20\x20\x20\x20','e/fancode-','QIRBh','\x20<div\x20clas','357049QXoxJb','\x20\x20\x20<button','popupOverl','torAll','onclick','fzZaY','classList','indiaBtn','mNLto','475829MJhYTV','ed\x20mt-2\x22>⏰','s/main/fan','zcJxI','code.json','ass=\x22text-','https://ra','event_cate','y-400\x20curs','xTKdw','querySelec','DCxWZ','fferent\x20fi','deKtL','div','mg\x20src=\x22','base\x20font-','s=\x22text-5x','json','\x20\x20\x20\x20\x20\x20\x20\x20<i','e\x22>','_blank','LIVE','oBukY','in\x20later</','ibold\x20text','-xl\x20font-s','addEventLi','\x22>\x0a\x20\x20\x20\x20\x20\x20\x20','\x20\x20\x20\x20</div>','target','0\x20text-gra','nimated'];_0x22d6=function(){return _0x3e6c60;};return _0x22d6();}async function loadMatches(){const _0x134727=_0x284a7b,_0x59afdc={'Cycfx':function(_0x4ae7fd,_0x2f1f52){return _0x4ae7fd(_0x2f1f52);},'kQfxy':_0x134727(0x1f0)+_0x134727(0x1cb)+_0x134727(0x22d)+_0x134727(0x213)+_0x134727(0x1de)+_0x134727(0x245)+_0x134727(0x1ec)+_0x134727(0x1ee),'kuCxz':function(_0xc2d1fd,_0x52add7){return _0xc2d1fd+_0x52add7;},'tiSXZ':_0x134727(0x217),'wCDtn':_0x134727(0x26b)+_0x134727(0x226),'xTKdw':_0x134727(0x229)};try{const _0x200524=await _0x59afdc[_0x134727(0x22f)](fetch,_0x59afdc[_0x134727(0x1b9)]),_0xa4936c=await _0x200524[_0x134727(0x1fc)]();allMatches=_0xa4936c[_0x134727(0x24d)],lastUpdate[_0x134727(0x23a)+'t']=_0x59afdc[_0x134727(0x266)](_0x59afdc[_0x134727(0x20e)],_0xa4936c[_0x59afdc[_0x134727(0x1af)]]),_0x59afdc[_0x134727(0x22f)](renderMatches,_0x59afdc[_0x134727(0x1f3)]);}catch(_0x72fbce){matchesContainer[_0x134727(0x253)]=_0x134727(0x1b0)+_0x134727(0x1bf)+_0x134727(0x256)+_0x134727(0x250)+_0x134727(0x22a)+_0x134727(0x206)+_0x134727(0x1e0)+_0x134727(0x1fb)+_0x134727(0x26c)+_0x134727(0x1d1)+_0x134727(0x225)+_0x134727(0x215)+_0x134727(0x249)+_0x134727(0x1c8)+_0x134727(0x203)+_0x134727(0x1d7)+_0x134727(0x24a)+_0x134727(0x214)+_0x134727(0x1c4)+_0x134727(0x1b4)+_0x134727(0x272)+_0x134727(0x1cc)+_0x134727(0x227)+_0x134727(0x202)+_0x134727(0x219)+_0x134727(0x1dd);}}function filterMatches(_0x5e2db0){const _0x46632c=_0x284a7b,_0x390daa={'nctve':_0x46632c(0x232),'hRpfb':_0x46632c(0x24f),'deKtL':function(_0x46cdc0,_0x35fbd4){return _0x46cdc0(_0x35fbd4);}};document[_0x46632c(0x1f4)+_0x46632c(0x1e4)](_0x390daa[_0x46632c(0x20b)])[_0x46632c(0x1c7)](_0x525850=>{const _0x435a15=_0x46632c;_0x525850[_0x435a15(0x1e7)][_0x435a15(0x24b)](_0x390daa[_0x435a15(0x1d4)]);}),event[_0x46632c(0x208)][_0x46632c(0x1e7)][_0x46632c(0x23d)](_0x390daa[_0x46632c(0x1d4)]),_0x390daa[_0x46632c(0x1f7)](renderMatches,_0x5e2db0);}document[_0x284a7b(0x1f4)+_0x284a7b(0x1e4)](_0x284a7b(0x24f))[_0x284a7b(0x1c7)](_0xd15bf7=>{const _0x36389a=_0x284a7b,_0x5150ff={'XoePx':_0x36389a(0x239)+_0x36389a(0x20a),'OjcXb':_0x36389a(0x236)+_0x36389a(0x26f),'IaNoV':_0x36389a(0x1b7),'QIRBh':_0x36389a(0x1b8)};_0xd15bf7[_0x36389a(0x205)+_0x36389a(0x1c2)](_0x5150ff[_0x36389a(0x220)],()=>{const _0x792baa=_0x36389a;_0xd15bf7[_0x792baa(0x1e7)][_0x792baa(0x23d)](_0x5150ff[_0x792baa(0x210)],_0x5150ff[_0x792baa(0x1da)]);}),_0xd15bf7[_0x36389a(0x205)+_0x36389a(0x1c2)](_0x5150ff[_0x36389a(0x1df)],()=>{const _0x300e06=_0x36389a;_0xd15bf7[_0x300e06(0x1e7)][_0x300e06(0x24b)](_0x5150ff[_0x300e06(0x210)],_0x5150ff[_0x300e06(0x1da)]);});}),loadMatches();
+</script>
+</body>
+</html>
