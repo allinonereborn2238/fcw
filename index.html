@@ -1,480 +1,632 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Fancode Stream</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
-  <style>
-    :root {
-      --primary: #1a73e8; /* Fancode blue */
-      --primary-dark: #0d5bbc; /* Darker blue */
-      --secondary: #ff6d00; /* Fancode orange */
-      --accent: #ff9100; /* Lighter orange */
-    }
-    
-    body {
-      font-family: 'Poppins', sans-serif;
-      background: #121212;
-      color: #f8f9fa;
-      min-height: 100vh;
-      transition: all 0.3s ease;
-    }
-    
-    /* Card Styles */
-    .card {
-      transition: all 0.3s ease;
-      background: #1e1e1e;
-      border-radius: 12px;
-      overflow: hidden;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-      border: 1px solid #333;
-      animation: fadeInUp 0.5s ease forwards;
-      opacity: 0;
-      transform: translateY(10px);
-    }
-    
-    @keyframes fadeInUp {
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-    
-    .card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
-    }
-    
-    /* Text Colors */
-    .text-dark {
-      color: #f8f9fa !important;
-    }
-    
-    .text-muted {
-      color: #adb5bd !important;
-    }
-    
-    /* Header Styles */
-    .header-glow {
-      background: linear-gradient(90deg, var(--primary), var(--primary-dark));
-      box-shadow: 0 4px 12px rgba(26, 115, 232, 0.2);
-    }
-    
-    /* Rest of your existing styles... */
-    .badge {
-      font-size: 12px;
-      font-weight: 600;
-      padding: 4px 8px;
-      border-radius: 6px;
-      background: rgba(0, 0, 0, 0.7);
-      color: white;
-    }
-    
-    .status-live {
-      background: linear-gradient(45deg, #e53935, #c62828);
-      color: #fff;
-      animation: pulse 2s infinite;
-    }
-    
-    .status-upcoming {
-      background: linear-gradient(45deg, var(--secondary), var(--accent));
-      color: #fff;
-    }
-    
-    @keyframes pulse {
-      0% { box-shadow: 0 0 0 0 rgba(229, 57, 53, 0.4); }
-      70% { box-shadow: 0 0 0 8px rgba(229, 57, 53, 0); }
-      100% { box-shadow: 0 0 0 0 rgba(229, 57, 53, 0); }
-    }
-    
-    .tab {
-      position: relative;
-      padding: 8px 16px;
-      transition: all 0.2s ease;
-      color: #adb5bd;
-      font-weight: 500;
-    }
-    
-    .tab::after {
-      content: "";
-      position: absolute;
-      bottom: -4px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 0;
-      height: 3px;
-      background: var(--primary);
-      transition: width 0.2s ease;
-    }
-    
-    .tab:hover {
-      color: var(--primary);
-    }
-    
-    .tab.active {
-      color: var(--primary);
-      font-weight: 600;
-    }
-    
-    .tab.active::after {
-      width: 80%;
-    }
-    
-    .popup-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.7);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      opacity: 0;
-      visibility: hidden;
-      transition: all 0.3s ease;
-      z-index: 100;
-    }
-    
-    .popup-overlay.active {
-      opacity: 1;
-      visibility: visible;
-    }
-    
-    .popup {
-      background: #1e1e1e;
-      padding: 30px;
-      border-radius: 16px;
-      text-align: center;
-      width: 90%;
-      max-width: 400px;
-      transform: translateY(20px);
-      transition: transform 0.3s ease;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-    }
-    
-    .popup-overlay.active .popup {
-      transform: translateY(0);
-    }
-    
-    .popup h2 {
-      font-size: 1.5rem;
-      margin-bottom: 1.5rem;
-      color: var(--primary);
-    }
-    
-    .btn {
-      display: block;
-      width: 100%;
-      padding: 14px;
-      margin: 12px 0;
-      border-radius: 12px;
-      font-size: 15px;
-      font-weight: 600;
-      transition: all 0.3s ease;
-      cursor: pointer;
-      color: #fff;
-      border: none;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    }
-    
-    .btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-    }
-    
-    .btn:active {
-      transform: translateY(0);
-    }
-    
-    .btn-worldwide {
-      background: linear-gradient(45deg, var(--primary), var(--primary-dark));
-    }
-    
-    .btn-india {
-      background: linear-gradient(45deg, var(--secondary), var(--accent));
-    }
-    
-    .loading {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 200px;
-    }
-    
-    .loading-spinner {
-      width: 50px;
-      height: 50px;
-      border: 5px solid rgba(26, 115, 232, 0.1);
-      border-radius: 50%;
-      border-top-color: var(--primary);
-      animation: spin 1s linear infinite;
-    }
-    
-    @keyframes spin {
-      100% { transform: rotate(360deg); }
-    }
-    
-    .watch-btn {
-      background: linear-gradient(45deg, var(--primary), var(--primary-dark));
-      color: white;
-      transition: all 0.3s ease;
-    }
-    
-    .watch-btn:hover {
-      background: linear-gradient(45deg, var(--primary-dark), var(--primary));
-    }
-    
-    .text-primary {
-      color: var(--primary);
-    }
-    
-    .text-secondary {
-      color: var(--secondary);
-    }
-  </style>
-</head>
-<body class="animate__animated animate__fadeIn">
-  <!-- Navbar -->
-  <header class="header-glow text-white p-4 flex justify-between items-center">
-    <h1 class="text-xl font-bold flex items-center space-x-2">
-      <span class="text-2xl">📺</span>
-      <span>Fancode Stream</span>
-    </h1>
-    <div class="flex items-center space-x-4">
-      <span id="lastUpdate" class="text-sm bg-white bg-opacity-20 px-3 py-1 rounded-full"></span>
-    </div>
-  </header>
-
-  <!-- Tabs -->
-  <div class="flex justify-center mt-6 space-x-6 font-medium bg-gray-800 py-3 mx-4 rounded-lg shadow-sm">
-    <button onclick="filterMatches('all')" class="tab active">All Matches</button>
-    <button onclick="filterMatches('LIVE')" class="tab">Live Now</button>
-    <button onclick="filterMatches('UPCOMING')" class="tab">Upcoming</button>
-  </div>
-
-  <!-- Matches Grid -->
-  <div id="matches" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 p-6">
-    <div class="loading">
-      <div class="loading-spinner"></div>
-    </div>
-  </div>
-
-  <!-- Popup -->
-  <div id="popupOverlay" class="popup-overlay">
-    <div class="popup">
-      <h2 class="text-lg font-bold mb-4 text-primary">Choose Stream</h2>
-      <button class="btn btn-worldwide" id="worldwideBtn">🌍 Worldwide Stream</button>
-      <button class="btn btn-india" id="indiaBtn">🇮🇳 India Stream</button>
-      <button class="mt-4 text-muted hover:text-white transition-colors" onclick="closePopup()">Close</button>
-    </div>
-  </div>
-
-<script>
-const _0x284a7b=_0x5a4b;(function(_0x470f04,_0x4d372b){const _0x19aeeb=_0x5a4b,_0xd51aab=_0x470f04();while(!![]){try{const _0x2d91b3=-parseInt(_0x19aeeb(0x1ea))/(-0xb1+-0x6f0+-0x1*-0x7a2)*(-parseInt(_0x19aeeb(0x1aa))/(0x52*-0x4f+0x1*0x21ad+-0x1*0x85d))+parseInt(_0x19aeeb(0x275))/(-0x2*-0x3ab+0x4c*0x3e+-0x19bb)*(-parseInt(_0x19aeeb(0x260))/(-0x574+-0x22b2+0x282a))+parseInt(_0x19aeeb(0x21f))/(0x13f+-0x221f*0x1+0x20e5)+parseInt(_0x19aeeb(0x1c3))/(0x1*-0xeaa+0x1c7d+-0xdcd)*(parseInt(_0x19aeeb(0x20d))/(0xa9c+0xb2b*0x3+-0x26*0x129))+-parseInt(_0x19aeeb(0x228))/(0x177b*0x1+-0x2*0xfd1+-0x5*-0x1a3)+parseInt(_0x19aeeb(0x242))/(0x1914+-0x2*0xc64+-0x43)*(-parseInt(_0x19aeeb(0x274))/(0x24ef*0x1+0x40*0x81+-0x4525))+-parseInt(_0x19aeeb(0x1e1))/(-0xfa8*-0x2+-0x1fbb*0x1+0x76)*(-parseInt(_0x19aeeb(0x25c))/(0xc64*-0x1+0x140e+-0x145*0x6));if(_0x2d91b3===_0x4d372b)break;else _0xd51aab['push'](_0xd51aab['shift']());}catch(_0x15a279){_0xd51aab['push'](_0xd51aab['shift']());}}}(_0x22d6,-0x1d884*-0x1+0x35b*0x55b+-0x4f*0x1582));const matchesContainer=document[_0x284a7b(0x1c6)+_0x284a7b(0x211)](_0x284a7b(0x24d)),popupOverlay=document[_0x284a7b(0x1c6)+_0x284a7b(0x211)](_0x284a7b(0x1e3)+'ay'),worldwideBtn=document[_0x284a7b(0x1c6)+_0x284a7b(0x211)](_0x284a7b(0x258)+'tn'),indiaBtn=document[_0x284a7b(0x1c6)+_0x284a7b(0x211)](_0x284a7b(0x1e8)),lastUpdate=document[_0x284a7b(0x1c6)+_0x284a7b(0x211)](_0x284a7b(0x218));let selectedAdfreeUrl='',allMatches=[];const worldwidePlayerUrl=_0x284a7b(0x223)+_0x284a7b(0x269),indiaPlayerUrl=_0x284a7b(0x1bc)+_0x284a7b(0x257);function openPopup(_0x4adb1f){const _0x53fdb2=_0x284a7b,_0x1e9477={'oBukY':_0x53fdb2(0x232)};selectedAdfreeUrl=_0x4adb1f,popupOverlay[_0x53fdb2(0x1e7)][_0x53fdb2(0x23d)](_0x1e9477[_0x53fdb2(0x201)]);}function closePopup(){const _0x1c5869=_0x284a7b,_0x44e504={'QpqJn':_0x1c5869(0x232)};popupOverlay[_0x1c5869(0x1e7)][_0x1c5869(0x24b)](_0x44e504[_0x1c5869(0x1c5)]);}function _0x5a4b(_0x401c2d,_0x4a99f3){const _0x4bb1e9=_0x22d6();return _0x5a4b=function(_0x31b053,_0x596fc5){_0x31b053=_0x31b053-(0xd94+0x2*-0x662+0xd8);let _0x1c75e2=_0x4bb1e9[_0x31b053];return _0x1c75e2;},_0x5a4b(_0x401c2d,_0x4a99f3);}worldwideBtn[_0x284a7b(0x1e5)]=()=>{const _0x24092d=_0x284a7b,_0x2da195={'bAver':function(_0x27ab1b,_0x2a4ab8){return _0x27ab1b(_0x2a4ab8);},'GJxuc':_0x24092d(0x1ff),'AhjwF':function(_0x30cd83){return _0x30cd83();}};window[_0x24092d(0x216)](worldwidePlayerUrl+_0x24092d(0x1d5)+_0x2da195[_0x24092d(0x1b3)](encodeURIComponent,selectedAdfreeUrl),_0x2da195[_0x24092d(0x1ad)]),_0x2da195[_0x24092d(0x1b1)](closePopup);},indiaBtn[_0x284a7b(0x1e5)]=()=>{const _0x4006b5=_0x284a7b,_0x22d85c={'FHHpT':function(_0x531e98,_0x4760f2){return _0x531e98(_0x4760f2);},'dBBdp':_0x4006b5(0x1ff),'mNLto':function(_0x49f865){return _0x49f865();}};window[_0x4006b5(0x216)](indiaPlayerUrl+_0x4006b5(0x1d5)+_0x22d85c[_0x4006b5(0x1c0)](encodeURIComponent,selectedAdfreeUrl),_0x22d85c[_0x4006b5(0x263)]),_0x22d85c[_0x4006b5(0x1e9)](closePopup);};function renderMatches(_0x2b697f=_0x284a7b(0x229)){const _0x9d689b=_0x284a7b,_0x3b2c80={'zOHxG':_0x9d689b(0x1f8),'ASUap':_0x9d689b(0x252),'CiUZA':function(_0x3b3c9d,_0x2e1293){return _0x3b3c9d*_0x2e1293;},'pnikP':function(_0xf3659d,_0x19de58){return _0xf3659d===_0x19de58;},'ziNPf':_0x9d689b(0x200),'ktBxB':_0x9d689b(0x1dc)+'e','EpdaP':_0x9d689b(0x1b2)+_0x9d689b(0x1d0),'mzmbD':_0x9d689b(0x261),'fzZaY':_0x9d689b(0x20c)+_0x9d689b(0x209)+_0x9d689b(0x1f2)+_0x9d689b(0x238),'YKAlX':function(_0x3d0f1e,_0x4b36a4){return _0x3d0f1e===_0x4b36a4;},'jEsRG':_0x9d689b(0x243)+'ve','zcJxI':_0x9d689b(0x22e),'SAOfV':function(_0x33c451,_0x3d6cd0){return _0x33c451!==_0x3d6cd0;},'DCxWZ':_0x9d689b(0x229),'xbjro':function(_0xcdc1d9,_0x5055b5){return _0xcdc1d9===_0x5055b5;}};matchesContainer[_0x9d689b(0x253)]='';let _0x387724=allMatches;_0x3b2c80[_0x9d689b(0x1c9)](_0x2b697f,_0x3b2c80[_0x9d689b(0x1f5)])&&(_0x387724=allMatches[_0x9d689b(0x21c)](_0x491460=>_0x491460[_0x9d689b(0x23b)]===_0x2b697f));if(_0x3b2c80[_0x9d689b(0x240)](_0x387724[_0x9d689b(0x224)],-0x293*-0xd+-0x2320+0x1a9)){matchesContainer[_0x9d689b(0x253)]=_0x9d689b(0x1b0)+_0x9d689b(0x1bf)+_0x9d689b(0x256)+_0x9d689b(0x250)+_0x9d689b(0x22a)+_0x9d689b(0x206)+_0x9d689b(0x1e0)+_0x9d689b(0x1fb)+_0x9d689b(0x26c)+_0x9d689b(0x1ab)+_0x9d689b(0x21b)+_0x9d689b(0x247)+_0x9d689b(0x251)+_0x9d689b(0x204)+_0x9d689b(0x1a9)+_0x9d689b(0x264)+_0x9d689b(0x26a)+_0x9d689b(0x21a)+_0x9d689b(0x267)+_0x9d689b(0x270)+_0x9d689b(0x230)+_0x9d689b(0x235)+_0x9d689b(0x1f6)+_0x9d689b(0x265)+_0x9d689b(0x276)+_0x9d689b(0x1db);return;}_0x387724[_0x9d689b(0x1c7)]((_0x13a5e6,_0x2c3a06)=>{const _0x171f58=_0x9d689b,_0x3f971b=document[_0x171f58(0x222)+_0x171f58(0x246)](_0x3b2c80[_0x171f58(0x23e)]);_0x3f971b[_0x171f58(0x26d)]=_0x3b2c80[_0x171f58(0x1d3)],_0x3f971b[_0x171f58(0x248)][_0x171f58(0x20f)+_0x171f58(0x273)]=_0x3b2c80[_0x171f58(0x262)](_0x2c3a06,0x9f5*-0x2+-0xd37+0xb0b*0x3+0.05)+'s',_0x3f971b[_0x171f58(0x253)]=_0x171f58(0x1b0)+_0x171f58(0x21e)+_0x171f58(0x21d)+_0x171f58(0x1fd)+_0x171f58(0x1f9)+_0x13a5e6[_0x171f58(0x237)]+_0x171f58(0x271)+_0x13a5e6[_0x171f58(0x255)]+(_0x171f58(0x206)+_0x171f58(0x1bd)+_0x171f58(0x234)+_0x171f58(0x25a)+_0x171f58(0x1ac)+_0x171f58(0x1fe))+_0x13a5e6[_0x171f58(0x1f1)+_0x171f58(0x24e)]+(_0x171f58(0x1ca)+_0x171f58(0x221)+_0x171f58(0x1d2)+_0x171f58(0x231)+_0x171f58(0x1ce)+_0x171f58(0x22b))+(_0x3b2c80[_0x171f58(0x1d6)](_0x13a5e6[_0x171f58(0x23b)],_0x3b2c80[_0x171f58(0x25b)])?_0x3b2c80[_0x171f58(0x1cf)]:_0x3b2c80[_0x171f58(0x24c)])+'\x22>'+_0x13a5e6[_0x171f58(0x23b)]+(_0x171f58(0x1ca)+_0x171f58(0x207)+_0x171f58(0x1b0)+_0x171f58(0x25e)+_0x171f58(0x23f)+_0x171f58(0x215)+_0x171f58(0x1c1)+_0x171f58(0x25d)+_0x171f58(0x1cd))+_0x13a5e6[_0x171f58(0x1a8)]+(_0x171f58(0x1c4)+_0x171f58(0x23c)+_0x171f58(0x1ef)+_0x171f58(0x1fa)+_0x171f58(0x212)+_0x171f58(0x26e)+'\x22>')+_0x13a5e6[_0x171f58(0x255)]+(_0x171f58(0x244)+_0x171f58(0x1b4)+_0x171f58(0x1c1)+_0x171f58(0x25d)+_0x171f58(0x1eb)+'\x20')+_0x13a5e6[_0x171f58(0x1b5)]+(_0x171f58(0x25f)+_0x171f58(0x1e2)+_0x171f58(0x1b6)+_0x171f58(0x268)+_0x171f58(0x1ba)+_0x171f58(0x22c)+_0x171f58(0x233))+(_0x3b2c80[_0x171f58(0x1d6)](_0x13a5e6[_0x171f58(0x23b)],_0x3b2c80[_0x171f58(0x25b)])?_0x3b2c80[_0x171f58(0x1d8)]:_0x3b2c80[_0x171f58(0x1e6)])+(_0x171f58(0x206)+_0x171f58(0x1ae))+(_0x3b2c80[_0x171f58(0x259)](_0x13a5e6[_0x171f58(0x23b)],_0x3b2c80[_0x171f58(0x25b)])?_0x3b2c80[_0x171f58(0x241)]:_0x3b2c80[_0x171f58(0x1ed)])+(_0x171f58(0x1d9)+_0x171f58(0x254)+_0x171f58(0x276)+_0x171f58(0x1db)),_0x3b2c80[_0x171f58(0x259)](_0x13a5e6[_0x171f58(0x23b)],_0x3b2c80[_0x171f58(0x25b)])&&(_0x3f971b[_0x171f58(0x1e5)]=()=>openPopup(_0x13a5e6[_0x171f58(0x1be)])),matchesContainer[_0x171f58(0x1bb)+'d'](_0x3f971b);});}function _0x22d6(){const _0x3e6c60=['hRpfb','bg-gray-70','1981021YrpZcj','tiSXZ','animationD','XoePx','ById','bold\x20mt-1\x20','com/drmliv','ad\x20matches','\x20\x20\x20<h3\x20cla','open','Updated:\x20','lastUpdate','p>\x0a\x20\x20\x20\x20\x20\x20<','\x20found</h3','</div>\x0a\x20\x20\x20','filter','elative\x22>\x0a','v\x20class=\x22r','421990mOaJmE','IaNoV','\x20\x20\x20\x20\x20\x20<spa','createElem','player_wor','length','div>\x0a\x20\x20\x20\x20\x20','e\x20time','se\x20try\x20aga','689600RASpBS','all','nter\x20py-10','2\x20badge\x20','ed-lg\x20font','ercontent.','🔔\x20Upcoming','Cycfx','text-muted','bsolute\x20to','active','-semibold\x20','ss=\x22absolu','\x22>Try\x20a\x20di','animate__p','src','or-default','animate__a','textConten','status','\x20\x20\x20\x20<h2\x20cl','add','zOHxG','-4\x22>\x0a\x20\x20\x20\x20\x20','xbjro','jEsRG','1017clAiGT','▶\x20Watch\x20Li','</h2>\x0a\x20\x20\x20\x20','live-event','ent','\x20\x20\x20\x20\x20<h3\x20c','style','ss=\x22text-x','iled\x20to\x20lo','remove','EpdaP','matches','gory','.tab','ll\x20text-ce','lass=\x22text','card','innerHTML','/button>\x0a\x20','title','ol-span-fu','ia.html','worldwideB','YKAlX','te\x20top-2\x20l','ziNPf','180WQRehe','m\x20text-mut','v\x20class=\x22p','</p>\x0a\x20\x20\x20\x20\x20','4qdiFBj','watch-btn','CiUZA','dBBdp','xt-white\x22>','lter</p>\x0a\x20','kuCxz','>\x0a\x20\x20\x20\x20\x20\x20\x20\x20','full\x20mt-4\x20','ld.html','No\x20matches','last\x20updat','l\x20mb-4\x20tex','className','text-white','ulse','<p\x20class=\x22','\x22\x20alt=\x22','ss=\x22text-m','elay','93490rzPrqm','1367433VSiedf','\x20\x20\x20\x20\x20</div','event_name','emibold\x20te','2cHPpfV','t-muted\x22>😕','eft-2\x20badg','GJxuc','\x20\x20\x20','wCDtn','\x0a\x20\x20\x20\x20\x20\x20<di','AhjwF','status-upc','bAver','\x20\x20\x20\x20<p\x20cla','startTime','\x20class=\x22w-','mouseenter','mouseleave','kQfxy','py-3\x20round','appendChil','player_ind','\x20<span\x20cla','adfree_url','v\x20class=\x22c','FHHpT','ss=\x22text-s','stener','30CgNQmd','</h3>\x0a\x20\x20\x20\x20','QpqJn','getElement','forEach','l\x20font-sem','SAOfV','</span>\x0a\x20\x20','w.githubus','uted\x22>Plea','ed\x22>','p-2\x20right-','ktBxB','oming','t-muted⚠️</','n\x20class=\x22a','ASUap','nctve','?stream=','pnikP','-white\x22>Fa','mzmbD','\x0a\x20\x20\x20\x20\x20\x20\x20\x20<','OjcXb','>\x0a\x20\x20\x20\x20','status-liv','/div>\x0a\x20\x20\x20\x20','e/fancode-','QIRBh','\x20<div\x20clas','357049QXoxJb','\x20\x20\x20<button','popupOverl','torAll','onclick','fzZaY','classList','indiaBtn','mNLto','475829MJhYTV','ed\x20mt-2\x22>⏰','s/main/fan','zcJxI','code.json','ass=\x22text-','https://ra','event_cate','y-400\x20curs','xTKdw','querySelec','DCxWZ','fferent\x20fi','deKtL','div','mg\x20src=\x22','base\x20font-','s=\x22text-5x','json','\x20\x20\x20\x20\x20\x20\x20\x20<i','e\x22>','_blank','LIVE','oBukY','in\x20later</','ibold\x20text','-xl\x20font-s','addEventLi','\x22>\x0a\x20\x20\x20\x20\x20\x20\x20','\x20\x20\x20\x20</div>','target','0\x20text-gra','nimated'];_0x22d6=function(){return _0x3e6c60;};return _0x22d6();}async function loadMatches(){const _0x134727=_0x284a7b,_0x59afdc={'Cycfx':function(_0x4ae7fd,_0x2f1f52){return _0x4ae7fd(_0x2f1f52);},'kQfxy':_0x134727(0x1f0)+_0x134727(0x1cb)+_0x134727(0x22d)+_0x134727(0x213)+_0x134727(0x1de)+_0x134727(0x245)+_0x134727(0x1ec)+_0x134727(0x1ee),'kuCxz':function(_0xc2d1fd,_0x52add7){return _0xc2d1fd+_0x52add7;},'tiSXZ':_0x134727(0x217),'wCDtn':_0x134727(0x26b)+_0x134727(0x226),'xTKdw':_0x134727(0x229)};try{const _0x200524=await _0x59afdc[_0x134727(0x22f)](fetch,_0x59afdc[_0x134727(0x1b9)]),_0xa4936c=await _0x200524[_0x134727(0x1fc)]();allMatches=_0xa4936c[_0x134727(0x24d)],lastUpdate[_0x134727(0x23a)+'t']=_0x59afdc[_0x134727(0x266)](_0x59afdc[_0x134727(0x20e)],_0xa4936c[_0x59afdc[_0x134727(0x1af)]]),_0x59afdc[_0x134727(0x22f)](renderMatches,_0x59afdc[_0x134727(0x1f3)]);}catch(_0x72fbce){matchesContainer[_0x134727(0x253)]=_0x134727(0x1b0)+_0x134727(0x1bf)+_0x134727(0x256)+_0x134727(0x250)+_0x134727(0x22a)+_0x134727(0x206)+_0x134727(0x1e0)+_0x134727(0x1fb)+_0x134727(0x26c)+_0x134727(0x1d1)+_0x134727(0x225)+_0x134727(0x215)+_0x134727(0x249)+_0x134727(0x1c8)+_0x134727(0x203)+_0x134727(0x1d7)+_0x134727(0x24a)+_0x134727(0x214)+_0x134727(0x1c4)+_0x134727(0x1b4)+_0x134727(0x272)+_0x134727(0x1cc)+_0x134727(0x227)+_0x134727(0x202)+_0x134727(0x219)+_0x134727(0x1dd);}}function filterMatches(_0x5e2db0){const _0x46632c=_0x284a7b,_0x390daa={'nctve':_0x46632c(0x232),'hRpfb':_0x46632c(0x24f),'deKtL':function(_0x46cdc0,_0x35fbd4){return _0x46cdc0(_0x35fbd4);}};document[_0x46632c(0x1f4)+_0x46632c(0x1e4)](_0x390daa[_0x46632c(0x20b)])[_0x46632c(0x1c7)](_0x525850=>{const _0x435a15=_0x46632c;_0x525850[_0x435a15(0x1e7)][_0x435a15(0x24b)](_0x390daa[_0x435a15(0x1d4)]);}),event[_0x46632c(0x208)][_0x46632c(0x1e7)][_0x46632c(0x23d)](_0x390daa[_0x46632c(0x1d4)]),_0x390daa[_0x46632c(0x1f7)](renderMatches,_0x5e2db0);}document[_0x284a7b(0x1f4)+_0x284a7b(0x1e4)](_0x284a7b(0x24f))[_0x284a7b(0x1c7)](_0xd15bf7=>{const _0x36389a=_0x284a7b,_0x5150ff={'XoePx':_0x36389a(0x239)+_0x36389a(0x20a),'OjcXb':_0x36389a(0x236)+_0x36389a(0x26f),'IaNoV':_0x36389a(0x1b7),'QIRBh':_0x36389a(0x1b8)};_0xd15bf7[_0x36389a(0x205)+_0x36389a(0x1c2)](_0x5150ff[_0x36389a(0x220)],()=>{const _0x792baa=_0x36389a;_0xd15bf7[_0x792baa(0x1e7)][_0x792baa(0x23d)](_0x5150ff[_0x792baa(0x210)],_0x5150ff[_0x792baa(0x1da)]);}),_0xd15bf7[_0x36389a(0x205)+_0x36389a(0x1c2)](_0x5150ff[_0x36389a(0x1df)],()=>{const _0x300e06=_0x36389a;_0xd15bf7[_0x300e06(0x1e7)][_0x300e06(0x24b)](_0x5150ff[_0x300e06(0x210)],_0x5150ff[_0x300e06(0x1da)]);});}),loadMatches();
-</script>
-  <script>
-// Support Us Popup with 4-second countdown, URL redirection, and 24-hour cooldown
-document.addEventListener('DOMContentLoaded', function() {
-    // Function to get page-specific storage key
-    function getPageKey() {
-        return 'popupShown_' + window.location.pathname;
-    }
-
-    // Check if popup was shown for this page in the last 24 hours
-    const pageKey = getPageKey();
-    const popupShownTime = localStorage.getItem(pageKey);
-    const currentTime = new Date().getTime();
-    const twentyFourHours = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
-
-    if (!popupShownTime || (currentTime - popupShownTime) > twentyFourHours) {
-        showPopup();
-    }
-
-    function showPopup() {
-        // Create popup elements with enhanced styling
-        const popupHTML = `
-        <div id="popup-overlay" style="
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FanCode Live Matches</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #1a1a2e;
+            --secondary: #16213e;
+            --accent: #e94560;
+            --light: #f1f1f1;
+            --dark: #0f0f1a;
+            --success: #4ade80;
+            --warning: #f59e0b;
+            --info: #60a5fa;
+            --text: #333333;
+            --text-light: #6b7280;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        @keyframes slideInRight {
+            from { transform: translateX(100px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        
+        @keyframes slideInLeft {
+            from { transform: translateX(-100px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
+            color: var(--text);
+            min-height: 100vh;
+        }
+        
+        header {
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            color: white;
+            padding: 1.5rem;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+            z-index: 10;
+        }
+        
+        header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 70%);
+            z-index: -1;
+            animation: pulse 15s infinite alternate;
+        }
+        
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+        
+        .logo i {
+            color: var(--accent);
+        }
+        
+        .refresh-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .refresh-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1.5rem;
+            animation: fadeIn 0.8s ease-out;
+        }
+        
+        .section-title {
+            margin: 2rem 0 1.5rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 2px solid var(--primary);
+            color: var(--primary);
+            font-size: 1.75rem;
+            font-weight: 600;
+            position: relative;
+            display: inline-block;
+        }
+        
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 50%;
+            height: 4px;
+            background: var(--accent);
+            border-radius: 2px;
+        }
+        
+        .matches-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+        
+        .match-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            cursor: pointer;
+            opacity: 0;
+            animation: fadeIn 0.6s forwards;
+            animation-delay: calc(var(--delay) * 0.1s);
+            position: relative;
+        }
+        
+        .match-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.12);
+        }
+        
+        .match-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: var(--accent);
+        }
+        
+        .match-image {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+        
+        .match-card:hover .match-image {
+            transform: scale(1.03);
+        }
+        
+        .match-details {
+            padding: 1.5rem;
+        }
+        
+        .match-category {
+            display: inline-block;
+            background: var(--primary);
+            color: white;
+            padding: 0.35rem 0.75rem;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            margin-bottom: 0.75rem;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+        }
+        
+        .match-title {
+            font-size: 1.2rem;
+            margin-bottom: 0.75rem;
+            line-height: 1.4;
+            font-weight: 600;
+            color: var(--dark);
+        }
+        
+        .match-tournament {
+            font-size: 0.95rem;
+            color: var(--text-light);
+            margin-bottom: 1rem;
+            line-height: 1.5;
+        }
+        
+        .match-status {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .live-badge {
+            background: var(--accent);
+            color: white;
+            padding: 0.35rem 0.75rem;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-right: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .live-badge::before {
+            content: '';
+            width: 8px;
+            height: 8px;
+            background: white;
+            border-radius: 50%;
+            animation: pulse 1.5s infinite;
+        }
+        
+        .upcoming-badge {
+            background: var(--info);
+            color: white;
+            padding: 0.35rem 0.75rem;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-right: 0.75rem;
+        }
+        
+        .match-time {
+            font-size: 0.9rem;
+            color: var(--text-light);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .match-time i {
+            font-size: 0.8rem;
+        }
+        
+        .teams-container {
+            margin-top: 1.25rem;
+            background: rgba(0, 0, 0, 0.02);
+            border-radius: 8px;
+            padding: 0.75rem;
+        }
+        
+        .team {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.75rem;
+        }
+        
+        .team:last-child {
+            margin-bottom: 0;
+        }
+        
+        .team-flag {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            margin-right: 0.75rem;
+            object-fit: cover;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+        
+        .team-name {
+            font-size: 0.95rem;
+            font-weight: 500;
+        }
+        
+        .score {
+            margin-left: auto;
+            font-weight: 600;
+            font-size: 0.95rem;
+            background: rgba(0, 0, 0, 0.05);
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            min-width: 70px;
+            text-align: center;
+        }
+        
+        /* Modal Styles */
+        .modal {
+            display: none;
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0,0,0,0.85);
-            display: flex;
+            background-color: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
             justify-content: center;
             align-items: center;
-            z-index: 9999;
+            opacity: 0;
+            transition: opacity 0.3s ease;
             backdrop-filter: blur(5px);
-            animation: fadeIn 0.5s ease-out;
-        ">
-            <div id="popup-content" style="
-                background: linear-gradient(145deg, #1a1a2e, #16213e);
-                padding: 40px;
-                border-radius: 15px;
-                text-align: center;
-                max-width: 500px;
-                width: 90%;
-                box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
-                border: 1px solid rgba(0, 255, 255, 0.2);
-                position: relative;
-                overflow: hidden;
-                animation: slideUp 0.5s ease-out;
-            ">
-                <div style="
-                    position: absolute;
-                    top: 0;
-                    left: 0;
-                    width: 100%;
-                    height: 4px;
-                    background: linear-gradient(90deg, #00ffcc, #00fffc, #00ccff);
-                "></div>
-                
-                <h2 style="
-                    color: #00fffc;
-                    font-size: 28px;
-                    margin-bottom: 15px;
-                    text-shadow: 0 0 10px rgba(0, 255, 252, 0.5);
-                    font-family: 'Arial', sans-serif;
-                ">Support Our Work</h2>
-                
-                <p style="
-                    color: #ffffff;
-                    font-size: 16px;
-                    line-height: 1.6;
-                    margin-bottom: 25px;
-                ">We're committed to providing quality content. Your support helps us keep going!</p>
-                
-                <button id="support-btn" style="
-                    background: linear-gradient(45deg, #00ffcc, #00ccff);
-                    color: #111;
-                    padding: 15px 40px;
-                    border: none;
-                    border-radius: 50px;
-                    font-size: 18px;
-                    font-weight: bold;
-                    cursor: pointer;
-                    margin-top: 10px;
-                    transition: all 0.3s ease;
-                    box-shadow: 0 0 15px rgba(0, 204, 255, 0.5);
-                    position: relative;
-                    overflow: hidden;
-                ">SUPPORT NOW</button>
-                
-                <div id="countdown" style="
-                    margin-top: 20px;
-                    font-size: 16px;
-                    color: rgba(255,255,255,0.7);
-                    display: none;
-                    animation: pulse 1s infinite alternate;
-                ">Please open the ads page sometime. Closing in <span id="countdown-number" style="
-                    color: #00fffc;
-                    font-weight: bold;
-                ">4</span> seconds...</div>
-                
-                <div style="
-                    position: absolute;
-                    bottom: 0;
-                    left: 0;
-                    width: 100%;
-                    height: 4px;
-                    background: linear-gradient(90deg, #00ffcc, #00fffc, #00ccff);
-                "></div>
+        }
+        
+        .modal.show {
+            display: flex;
+            animation: fadeIn 0.3s forwards;
+        }
+        
+        .modal-content {
+            background: white;
+            border-radius: 16px;
+            width: 90%;
+            max-width: 500px;
+            padding: 2rem;
+            position: relative;
+            transform: scale(0.9);
+            opacity: 0;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+        }
+        
+        .modal.show .modal-content {
+            transform: scale(1);
+            opacity: 1;
+        }
+        
+        .close-modal {
+            position: absolute;
+            top: 1.5rem;
+            right: 1.5rem;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-light);
+            transition: all 0.3s ease;
+            background: rgba(0, 0, 0, 0.05);
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+        }
+        
+        .close-modal:hover {
+            color: var(--accent);
+            transform: rotate(90deg);
+            background: rgba(233, 69, 96, 0.1);
+        }
+        
+        .modal-title {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--primary);
+            font-weight: 700;
+            line-height: 1.4;
+        }
+        
+        .modal-tournament {
+            font-size: 1.05rem;
+            color: var(--text-light);
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .modal-tournament i {
+            color: var(--accent);
+        }
+        
+        .stream-options {
+            display: flex;
+            flex-direction: column;
+            gap: 1.25rem;
+        }
+        
+        .stream-btn {
+            padding: 1rem 1.5rem;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            text-align: center;
+            text-decoration: none;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        .stream-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+        
+        .stream-btn:active {
+            transform: translateY(0);
+        }
+        
+        .worldwide-btn {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .worldwide-btn:hover {
+            background: var(--secondary);
+        }
+        
+        .india-btn {
+            background: var(--accent);
+            color: white;
+        }
+        
+        .india-btn:hover {
+            background: #f05a74;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 3rem;
+            font-size: 1.2rem;
+            color: var(--text-light);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid rgba(0, 0, 0, 0.1);
+            border-radius: 50%;
+            border-top-color: var(--accent);
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .no-matches {
+            text-align: center;
+            padding: 2rem;
+            font-size: 1.1rem;
+            color: var(--text-light);
+            grid-column: 1 / -1;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .error {
+            text-align: center;
+            padding: 2rem;
+            font-size: 1.1rem;
+            color: var(--accent);
+            grid-column: 1 / -1;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        footer {
+            background: var(--primary);
+            color: white;
+            text-align: center;
+            padding: 2rem;
+            margin-top: 3rem;
+        }
+        
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin: 1rem 0;
+        }
+        
+        .footer-links a {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        
+        .footer-links a:hover {
+            color: white;
+        }
+        
+        .copyright {
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.9rem;
+            margin-top: 1.5rem;
+        }
+        
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .matches-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .modal-content {
+                padding: 1.5rem;
+            }
+            
+            .stream-btn {
+                padding: 0.9rem 1.25rem;
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <div class="logo">
+                <i class="fas fa-tv"></i>
+                <span>FanCode Stream</span>
+            </div>
+            <button class="refresh-btn" id="refresh-btn">
+                <i class="fas fa-sync-alt"></i>
+                Refresh
+            </button>
+        </div>
+    </header>
+    
+    <div class="container">
+        <h2 class="section-title animate__animated animate__fadeInLeft">Live Matches</h2>
+        <div id="live-matches" class="matches-container">
+            <div class="loading">
+                <div class="loading-spinner"></div>
+                Loading live matches...
             </div>
         </div>
-
-        <style>
-            @keyframes fadeIn {
-                from { opacity: 0; }
-                to { opacity: 1; }
-            }
-            
-            @keyframes slideUp {
-                from { transform: translateY(20px); opacity: 0; }
-                to { transform: translateY(0); opacity: 1; }
-            }
-            
-            @keyframes pulse {
-                from { opacity: 0.7; }
-                to { opacity: 1; }
-            }
-            
-            @keyframes neonGlow {
-                0% { box-shadow: 0 0 10px rgba(0, 255, 252, 0.7); }
-                50% { box-shadow: 0 0 20px rgba(0, 255, 252, 0.9), 0 0 30px rgba(0, 204, 255, 0.5); }
-                100% { box-shadow: 0 0 10px rgba(0, 255, 252, 0.7); }
-            }
-            
-            #support-btn:hover {
-                transform: translateY(-3px);
-                box-shadow: 0 0 25px rgba(0, 204, 255, 0.8);
-                animation: neonGlow 1.5s infinite;
-            }
-            
-            #support-btn:active {
-                transform: translateY(1px);
-            }
-            
-            #support-btn::before {
-                content: '';
-                position: absolute;
-                top: 0;
-                left: -100%;
-                width: 100%;
-                height: 100%;
-                background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-                transition: 0.5s;
-            }
-            
-            #support-btn:hover::before {
-                left: 100%;
-            }
-        </style>`;
-
-        // Add popup to the page
-        document.body.insertAdjacentHTML('beforeend', popupHTML);
-
-        // Handle support button click
-        document.getElementById('support-btn').addEventListener('click', function() {
-            // Store the current time for this page
-            localStorage.setItem(pageKey, currentTime.toString());
-            
-            // Open the ad URL in new tab
-            window.open('https://snowmanjo.com/pcfd9nfttu?key=5a92c42402bb26985071a171191fc546', '_blank');
-            
-            // Show message and countdown
-            const countdownEl = document.getElementById('countdown');
-            const countdownNumber = document.getElementById('countdown-number');
-            countdownEl.style.display = 'block';
-            this.style.pointerEvents = 'none';
-            
-            // Change button text
-            this.textContent = 'THANK YOU!';
-            
-            // 4-second countdown
-            let seconds = 4;
-            countdownNumber.textContent = seconds;
-            
-            const countdownInterval = setInterval(function() {
-                seconds--;
-                countdownNumber.textContent = seconds;
-                
-                if (seconds <= 0) {
-                    clearInterval(countdownInterval);
-                    document.getElementById('popup-overlay').style.animation = 'fadeIn 0.5s ease-out reverse';
-                    setTimeout(() => {
-                        document.getElementById('popup-overlay').remove();
-                    }, 500);
-                }
-            }, 1000);
-        });
-    }
-});
-</script>
+        
+        <h2 class="section-title animate__animated animate__fadeInLeft">Upcoming Matches</h2>
+        <div id="upcoming-matches" class="matches-container">
+            <div class="loading">
+                <div class="loading-spinner"></div>
+                Loading upcoming matches...
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal for streaming options -->
+    <div id="stream-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h3 class="modal-title" id="modal-match-title"></h3>
+            <p class="modal-tournament">
+                <i class="fas fa-trophy"></i>
+                <span id="modal-match-tournament"></span>
+            </p>
+            <div class="stream-options">
+                <a id="worldwide-btn" class="stream-btn worldwide-btn" href="#" target="_blank">
+                    <i class="fas fa-globe"></i>
+                    Worldwide Stream
+                </a>
+                <a id="india-btn" class="stream-btn india-btn" href="#" target="_blank">
+                    <i class="fas fa-flag"></i>
+                    India Stream
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <footer>
+        <div class="footer-content">
+            <div class="logo">
+                <i class="fas fa-tv"></i>
+                <span>FanCode Stream</span>
+            </div>
+            <div class="footer-links">
+                <a href="#">Home</a>
+                <a href="#">About</a>
+                <a href="#">Contact</a>
+                <a href="#">Privacy Policy</a>
+                <a href="#">Terms</a>
+            </div>
+            <div class="copyright">
+                &copy; 2025 FanCode Stream. All rights reserved.
+            </div>
+        </div>
+    </footer>
+    
+    <script>
+        const _0x489695=_0x1c5e;(function(_0xfae73a,_0x43889b){const _0x5e2b70=_0x1c5e,_0x50151c=_0xfae73a();while(!![]){try{const _0x190ecb=-parseInt(_0x5e2b70(0x1f2))/(0x481+0xa67*-0x3+0x1*0x1ab5)*(parseInt(_0x5e2b70(0x24b))/(0x44b*0x2+0xf02+-0x2*0xbcb))+parseInt(_0x5e2b70(0x1fe))/(-0x1092*0x1+-0x267a+0x370f)+parseInt(_0x5e2b70(0x27b))/(-0x91*0x40+-0x46b+0x28af)+parseInt(_0x5e2b70(0x1f3))/(0x1a4*0x10+0xe01+0x406*-0xa)+-parseInt(_0x5e2b70(0x1d0))/(0xa87+0x11e7+-0x6*0x4bc)+-parseInt(_0x5e2b70(0x22c))/(0x1*-0x16fc+-0x1da6+0x34a9)+parseInt(_0x5e2b70(0x292))/(-0xd4f*0x1+0x161b+-0x8c4);if(_0x190ecb===_0x43889b)break;else _0x50151c['push'](_0x50151c['shift']());}catch(_0x2ac229){_0x50151c['push'](_0x50151c['shift']());}}}(_0x5b86,-0x4*-0x3ef09+0x94666+-0x4a5e5*0x3));const jsonUrl=_0x489695(0x1c7)+_0x489695(0x278)+_0x489695(0x258)+_0x489695(0x1ce)+_0x489695(0x27e)+_0x489695(0x254)+_0x489695(0x270)+_0x489695(0x29d)+_0x489695(0x213)+'n',worldwidePlayerUrl=_0x489695(0x200)+_0x489695(0x257)+_0x489695(0x248)+_0x489695(0x220)+_0x489695(0x225),indiaPlayerUrl=_0x489695(0x200)+_0x489695(0x257)+_0x489695(0x248)+_0x489695(0x1f4)+_0x489695(0x2a1),liveMatchesContainer=document[_0x489695(0x295)+_0x489695(0x26d)](_0x489695(0x1e6)+'es'),upcomingMatchesContainer=document[_0x489695(0x295)+_0x489695(0x26d)](_0x489695(0x1d2)+_0x489695(0x1f8)),modal=document[_0x489695(0x295)+_0x489695(0x26d)](_0x489695(0x250)+'al'),closeModal=document[_0x489695(0x216)+_0x489695(0x2ae)](_0x489695(0x28a)+'al'),modalTitle=document[_0x489695(0x295)+_0x489695(0x26d)](_0x489695(0x22b)+_0x489695(0x203)),modalTournament=document[_0x489695(0x295)+_0x489695(0x26d)](_0x489695(0x22b)+_0x489695(0x277)+'nt'),worldwideBtn=document[_0x489695(0x295)+_0x489695(0x26d)](_0x489695(0x1c3)+_0x489695(0x2a3)),indiaBtn=document[_0x489695(0x295)+_0x489695(0x26d)](_0x489695(0x240)),refreshBtn=document[_0x489695(0x295)+_0x489695(0x26d)](_0x489695(0x28c)+'n');let currentMatch=null;async function fetchAndRenderMatches(){const _0x4af316=_0x489695,_0x1bd5ed={'gBVis':function(_0x4e9ae1,_0x49649a,_0x1fb7ea){return _0x4e9ae1(_0x49649a,_0x1fb7ea);},'bSfXZ':function(_0x5a4d9d,_0x54ac1c,_0x2b2ed5){return _0x5a4d9d(_0x54ac1c,_0x2b2ed5);},'tiqnE':function(_0x8487bc,_0x1f574a){return _0x8487bc(_0x1f574a);},'mQpJr':function(_0x39d25d,_0x7f4365){return _0x39d25d>_0x7f4365;},'EPPZx':_0x4af316(0x25a)+_0x4af316(0x1fa)+_0x4af316(0x245)+_0x4af316(0x246)+_0x4af316(0x2a4)+_0x4af316(0x25f),'wofNK':function(_0xea778,_0x39cef6){return _0xea778>_0x39cef6;},'Hhlbr':_0x4af316(0x25a)+_0x4af316(0x1fa)+_0x4af316(0x1f1)+_0x4af316(0x2af)+_0x4af316(0x229)+_0x4af316(0x241),'DVWPK':_0x4af316(0x1d9)+_0x4af316(0x2a0)+_0x4af316(0x1d3),'oZRew':_0x4af316(0x25a)+_0x4af316(0x232)+_0x4af316(0x274)+_0x4af316(0x1e8)+_0x4af316(0x297)+_0x4af316(0x207)+_0x4af316(0x263)+_0x4af316(0x294),'gQNbL':_0x4af316(0x25a)+_0x4af316(0x232)+_0x4af316(0x274)+_0x4af316(0x237)+_0x4af316(0x2a2)+_0x4af316(0x247)+_0x4af316(0x29a)+_0x4af316(0x296)+'>'};try{liveMatchesContainer[_0x4af316(0x1ec)]=_0x4af316(0x1dd)+_0x4af316(0x280)+_0x4af316(0x284)+_0x4af316(0x1df)+_0x4af316(0x266)+_0x4af316(0x280)+_0x4af316(0x265)+_0x4af316(0x27f)+_0x4af316(0x252)+_0x4af316(0x25d)+_0x4af316(0x23c)+_0x4af316(0x280)+_0x4af316(0x205)+_0x4af316(0x272)+_0x4af316(0x293)+_0x4af316(0x1dd)+_0x4af316(0x280)+_0x4af316(0x22e)+_0x4af316(0x280)+_0x4af316(0x289),upcomingMatchesContainer[_0x4af316(0x1ec)]=_0x4af316(0x1dd)+_0x4af316(0x280)+_0x4af316(0x284)+_0x4af316(0x1df)+_0x4af316(0x266)+_0x4af316(0x280)+_0x4af316(0x265)+_0x4af316(0x27f)+_0x4af316(0x252)+_0x4af316(0x25d)+_0x4af316(0x23c)+_0x4af316(0x280)+_0x4af316(0x205)+_0x4af316(0x1c5)+_0x4af316(0x25e)+_0x4af316(0x28b)+_0x4af316(0x280)+_0x4af316(0x1e3)+_0x4af316(0x2a8)+_0x4af316(0x2a7);const _0x4607bc=await _0x1bd5ed[_0x4af316(0x221)](fetch,jsonUrl),_0x364109=await _0x4607bc[_0x4af316(0x269)]();liveMatchesContainer[_0x4af316(0x1ec)]='',upcomingMatchesContainer[_0x4af316(0x1ec)]='';const _0x1e45dc=_0x364109[_0x4af316(0x27c)][_0x4af316(0x244)](_0x15f35c=>_0x15f35c[_0x4af316(0x275)]===_0x4af316(0x28d)),_0x129134=_0x364109[_0x4af316(0x27c)][_0x4af316(0x244)](_0x409f0c=>_0x409f0c[_0x4af316(0x275)]!==_0x4af316(0x28d));_0x1bd5ed[_0x4af316(0x1e0)](_0x1e45dc[_0x4af316(0x24e)],-0x1179+0x47*-0x66+0x2dc3)?_0x1e45dc[_0x4af316(0x268)]((_0x1d635b,_0x4af68b)=>{const _0x2eb96e=_0x4af316,_0x11d04f=_0x1bd5ed[_0x2eb96e(0x1be)](createMatchCard,_0x1d635b,_0x4af68b);liveMatchesContainer[_0x2eb96e(0x1e1)+'d'](_0x11d04f);}):liveMatchesContainer[_0x4af316(0x1ec)]=_0x1bd5ed[_0x4af316(0x262)],_0x1bd5ed[_0x4af316(0x202)](_0x129134[_0x4af316(0x24e)],0x9*-0x17e+0x1b69+-0xdfb)?_0x129134[_0x4af316(0x268)]((_0x277a72,_0x3793fd)=>{const _0x1c3242=_0x4af316,_0x204bf6=_0x1bd5ed[_0x1c3242(0x1c9)](createMatchCard,_0x277a72,_0x3793fd);upcomingMatchesContainer[_0x1c3242(0x1e1)+'d'](_0x204bf6);}):upcomingMatchesContainer[_0x4af316(0x1ec)]=_0x1bd5ed[_0x4af316(0x206)];}catch(_0x2f220a){console[_0x4af316(0x1bc)](_0x1bd5ed[_0x4af316(0x243)],_0x2f220a),liveMatchesContainer[_0x4af316(0x1ec)]=_0x1bd5ed[_0x4af316(0x1c8)],upcomingMatchesContainer[_0x4af316(0x1ec)]=_0x1bd5ed[_0x4af316(0x260)];}}function _0x1c5e(_0x405711,_0x91f91){const _0x2cbf65=_0x5b86();return _0x1c5e=function(_0x16bf2f,_0x560d0c){_0x16bf2f=_0x16bf2f-(-0x2c*-0x9e+-0x215d+0x7ec);let _0x3297e0=_0x2cbf65[_0x16bf2f];return _0x3297e0;},_0x1c5e(_0x405711,_0x91f91);}function createMatchCard(_0x309e9d,_0x162f1b){const _0x3cad16=_0x489695,_0x4bf081={'LXvaR':function(_0x58bc0b,_0x3eae58){return _0x58bc0b(_0x3eae58);},'gQwCw':_0x3cad16(0x23a),'ajYvp':_0x3cad16(0x298),'RiwZi':_0x3cad16(0x1ea),'RSzbx':_0x3cad16(0x255)+_0x3cad16(0x24c)+_0x3cad16(0x1fd)+_0x3cad16(0x1f9)+_0x3cad16(0x23d),'MaQMc':function(_0x1a2028,_0x1b006b){return _0x1a2028===_0x1b006b;},'LjaEJ':_0x3cad16(0x28d),'kOLzF':_0x3cad16(0x22a)},_0x399a4e=document[_0x3cad16(0x1cf)+_0x3cad16(0x259)](_0x4bf081[_0x3cad16(0x1d5)]);_0x399a4e[_0x3cad16(0x27a)]=_0x4bf081[_0x3cad16(0x2ab)],_0x399a4e[_0x3cad16(0x1c6)][_0x3cad16(0x235)+'y'](_0x4bf081[_0x3cad16(0x234)],_0x162f1b);const _0x3b783e=_0x309e9d[_0x3cad16(0x251)]||_0x309e9d[_0x3cad16(0x1c1)]&&_0x309e9d[_0x3cad16(0x1c1)][_0x3cad16(0x230)]||_0x4bf081[_0x3cad16(0x1b7)],_0x2ccb73=_0x4bf081[_0x3cad16(0x227)](_0x309e9d[_0x3cad16(0x275)],_0x4bf081[_0x3cad16(0x1cd)]),_0x442dcf=_0x309e9d[_0x3cad16(0x28e)][0x1adf+-0xfd7*-0x2+-0x1*0x3a8d][_0x3cad16(0x21e)+'re']?_0x309e9d[_0x3cad16(0x28e)][0x1cda+0x2357+-0x4031][_0x3cad16(0x21e)+'re'][0x1b85*0x1+0x8ea+-0x246f]:null,_0x3cce44=_0x309e9d[_0x3cad16(0x28e)][-0x118*-0x1d+0x1a2a+-0x134b*0x3][_0x3cad16(0x21e)+'re']?_0x309e9d[_0x3cad16(0x28e)][-0x547+0x1538*0x1+-0xff0][_0x3cad16(0x21e)+'re'][-0x146d+0x2b*-0x2e+0x1c27]:null;return _0x399a4e[_0x3cad16(0x1ec)]=_0x3cad16(0x1dd)+_0x3cad16(0x236)+_0x3cad16(0x1bd)+_0x3b783e+_0x3cad16(0x25c)+_0x309e9d[_0x3cad16(0x209)]+(_0x3cad16(0x1db)+_0x3cad16(0x23e)+_0x3cad16(0x266)+_0x3cad16(0x22f)+_0x3cad16(0x1cc)+_0x3cad16(0x24d)+_0x3cad16(0x1d1)+_0x3cad16(0x280)+_0x3cad16(0x1bb)+_0x3cad16(0x261)+_0x3cad16(0x29b)+_0x3cad16(0x1fc))+_0x309e9d[_0x3cad16(0x217)]+(_0x3cad16(0x273)+_0x3cad16(0x280)+_0x3cad16(0x1b9)+_0x3cad16(0x1ba)+_0x3cad16(0x29c)+'\x22>')+_0x309e9d[_0x3cad16(0x209)]+(_0x3cad16(0x1de)+_0x3cad16(0x280)+_0x3cad16(0x21a)+_0x3cad16(0x1e2)+_0x3cad16(0x277)+_0x3cad16(0x1cb))+_0x309e9d[_0x3cad16(0x1fb)]+(_0x3cad16(0x26a)+_0x3cad16(0x280)+_0x3cad16(0x1dc)+_0x3cad16(0x1f7)+_0x3cad16(0x299)+_0x3cad16(0x2a8)+_0x3cad16(0x280)+_0x3cad16(0x26e))+(_0x2ccb73?_0x3cad16(0x24a)+_0x3cad16(0x1b8)+_0x3cad16(0x1e7)+_0x3cad16(0x22d):_0x3cad16(0x24a)+_0x3cad16(0x242)+_0x3cad16(0x1bf)+_0x3cad16(0x26f)+_0x3cad16(0x215))+(_0x3cad16(0x1dd)+_0x3cad16(0x280)+_0x3cad16(0x267)+_0x3cad16(0x2a6)+_0x3cad16(0x226)+_0x3cad16(0x1dd)+_0x3cad16(0x280)+_0x3cad16(0x22f)+_0x3cad16(0x276)+_0x3cad16(0x21f)+_0x3cad16(0x21d)+_0x3cad16(0x280)+_0x3cad16(0x280)+_0x3cad16(0x26e))+_0x309e9d[_0x3cad16(0x20d)]+(_0x3cad16(0x1dd)+_0x3cad16(0x280)+_0x3cad16(0x20a)+_0x3cad16(0x2a9)+_0x3cad16(0x280)+_0x3cad16(0x26b)+_0x3cad16(0x280)+_0x3cad16(0x280)+_0x3cad16(0x25a)+_0x3cad16(0x1e5)+_0x3cad16(0x1ff)+_0x3cad16(0x280)+_0x3cad16(0x280)+_0x3cad16(0x1ca)+_0x3cad16(0x1c0)+_0x3cad16(0x266)+_0x3cad16(0x280)+_0x3cad16(0x280)+_0x3cad16(0x27d)+'\x22')+_0x309e9d[_0x3cad16(0x28e)][0x1*0x25c0+0x58*-0x16+-0x1e30][_0x3cad16(0x282)][_0x3cad16(0x290)]+_0x3cad16(0x25c)+_0x309e9d[_0x3cad16(0x28e)][-0xa*-0x2d+0xb5+-0x277][_0x3cad16(0x231)]+(_0x3cad16(0x233)+_0x3cad16(0x1d4)+_0x3cad16(0x1dd)+_0x3cad16(0x280)+_0x3cad16(0x22f)+_0x3cad16(0x214)+_0x3cad16(0x224)+_0x3cad16(0x283))+_0x309e9d[_0x3cad16(0x28e)][-0x5*0x5dd+-0x1*0x62c+0x237d][_0x3cad16(0x1f5)]+(_0x3cad16(0x273)+_0x3cad16(0x280)+_0x3cad16(0x280)+_0x3cad16(0x26e))+(_0x442dcf?_0x3cad16(0x24a)+_0x3cad16(0x249)+_0x442dcf[_0x3cad16(0x238)]+'/'+_0x442dcf[_0x3cad16(0x1f0)]+'\x20('+_0x442dcf[_0x3cad16(0x25b)]+_0x3cad16(0x1d6):'')+(_0x3cad16(0x1dd)+_0x3cad16(0x280)+_0x3cad16(0x1e3)+_0x3cad16(0x2a8)+_0x3cad16(0x280)+_0x3cad16(0x239)+_0x3cad16(0x29f)+_0x3cad16(0x1c4)+_0x3cad16(0x280)+_0x3cad16(0x280)+_0x3cad16(0x1f6)+_0x3cad16(0x1ee))+_0x309e9d[_0x3cad16(0x28e)][-0xa0f+0x1cc2+-0x2*0x959][_0x3cad16(0x282)][_0x3cad16(0x290)]+_0x3cad16(0x25c)+_0x309e9d[_0x3cad16(0x28e)][0x786*-0x5+-0x1171+0x1*0x3710][_0x3cad16(0x231)]+(_0x3cad16(0x233)+_0x3cad16(0x1d4)+_0x3cad16(0x1dd)+_0x3cad16(0x280)+_0x3cad16(0x22f)+_0x3cad16(0x214)+_0x3cad16(0x224)+_0x3cad16(0x283))+_0x309e9d[_0x3cad16(0x28e)][0xf4+0x1953+-0x6*0x461][_0x3cad16(0x1f5)]+(_0x3cad16(0x273)+_0x3cad16(0x280)+_0x3cad16(0x280)+_0x3cad16(0x26e))+(_0x3cce44?_0x3cad16(0x24a)+_0x3cad16(0x249)+_0x3cce44[_0x3cad16(0x238)]+'/'+_0x3cce44[_0x3cad16(0x1f0)]+'\x20('+_0x3cce44[_0x3cad16(0x25b)]+_0x3cad16(0x1d6):'')+(_0x3cad16(0x1dd)+_0x3cad16(0x280)+_0x3cad16(0x1e3)+_0x3cad16(0x2a8)+_0x3cad16(0x280)+_0x3cad16(0x2b0)+_0x3cad16(0x280)+_0x3cad16(0x1e3)+_0x3cad16(0x2a8)+_0x3cad16(0x289)),_0x2ccb73&&_0x399a4e[_0x3cad16(0x2a5)+_0x3cad16(0x1c2)](_0x4bf081[_0x3cad16(0x26c)],()=>{const _0x36a000=_0x3cad16;currentMatch=_0x309e9d,_0x4bf081[_0x36a000(0x288)](showStreamModal,_0x309e9d);}),_0x399a4e;}function showStreamModal(_0x2cf1dc){const _0x387398=_0x489695,_0x5ebfaa={'KfXMr':function(_0x3b0147,_0x7ab0c){return _0x3b0147(_0x7ab0c);},'WJCRC':_0x387398(0x291),'rdgBA':_0x387398(0x201),'vdCSQ':_0x387398(0x253)+_0x387398(0x2ac)+_0x387398(0x20f)+_0x387398(0x23f)};modalTitle[_0x387398(0x2aa)+'t']=_0x2cf1dc[_0x387398(0x209)],modalTournament[_0x387398(0x2aa)+'t']=_0x2cf1dc[_0x387398(0x1fb)];const _0x33f44c=_0x2cf1dc[_0x387398(0x20c)+_0x387398(0x20b)]||_0x2cf1dc[_0x387398(0x285)]||_0x2cf1dc[_0x387398(0x1ed)+_0x387398(0x222)]&&_0x2cf1dc[_0x387398(0x1ed)+_0x387398(0x222)][_0x387398(0x24f)+_0x387398(0x219)];if(_0x33f44c){const _0x537128=_0x5ebfaa[_0x387398(0x1eb)](encodeURIComponent,_0x33f44c);worldwideBtn[_0x387398(0x279)]=worldwidePlayerUrl+_0x387398(0x211)+_0x537128,indiaBtn[_0x387398(0x279)]=indiaPlayerUrl+_0x387398(0x211)+_0x537128,modal[_0x387398(0x20e)][_0x387398(0x23b)](_0x5ebfaa[_0x387398(0x281)]),document[_0x387398(0x223)][_0x387398(0x1c6)][_0x387398(0x21b)]=_0x5ebfaa[_0x387398(0x287)];}else _0x5ebfaa[_0x387398(0x1eb)](alert,_0x5ebfaa[_0x387398(0x1d8)]);}function closeModalFunc(){const _0x57783c=_0x489695,_0x2e94e0={'qtiOI':_0x57783c(0x291),'GyeXA':_0x57783c(0x228)};modal[_0x57783c(0x20e)][_0x57783c(0x1e9)](_0x2e94e0[_0x57783c(0x212)]),document[_0x57783c(0x223)][_0x57783c(0x1c6)][_0x57783c(0x21b)]=_0x2e94e0[_0x57783c(0x21c)];}closeModal[_0x489695(0x2a5)+_0x489695(0x1c2)](_0x489695(0x22a),closeModalFunc),modal[_0x489695(0x2a5)+_0x489695(0x1c2)](_0x489695(0x22a),_0x4a1938=>{const _0x1b11ec=_0x489695,_0xb9bed8={'gPmwE':function(_0x3192ac,_0x19a09a){return _0x3192ac===_0x19a09a;},'bZpCu':function(_0x110aa8){return _0x110aa8();}};_0xb9bed8[_0x1b11ec(0x264)](_0x4a1938[_0x1b11ec(0x1da)],modal)&&_0xb9bed8[_0x1b11ec(0x208)](closeModalFunc);}),refreshBtn[_0x489695(0x2a5)+_0x489695(0x1c2)](_0x489695(0x22a),fetchAndRenderMatches),fetchAndRenderMatches();const observer=new IntersectionObserver(_0x570135=>{const _0x563cb8=_0x489695,_0x4c39a6={'KzNNp':_0x563cb8(0x204)+_0x563cb8(0x28f),'MIckK':_0x563cb8(0x2ad)+_0x563cb8(0x210)};_0x570135[_0x563cb8(0x268)](_0x537f03=>{const _0x50421e=_0x563cb8;_0x537f03[_0x50421e(0x218)+_0x50421e(0x271)]&&_0x537f03[_0x50421e(0x1da)][_0x50421e(0x20e)][_0x50421e(0x23b)](_0x4c39a6[_0x50421e(0x1ef)],_0x4c39a6[_0x50421e(0x256)]);});},{'threshold':0.1});document[_0x489695(0x216)+_0x489695(0x29e)](_0x489695(0x1d7)+_0x489695(0x1e4))[_0x489695(0x268)](_0xadd750=>{const _0x448b7e=_0x489695;observer[_0x448b7e(0x286)](_0xadd750);});function _0x5b86(){const _0x242773=['category','isIntersec','ayback_URL','\x20\x20\x20\x20\x20\x20<p\x20c','overflow','GyeXA','k\x22></i>\x0a\x20\x20','cricketSco','ar\x20fa-cloc','/player_wo','tiqnE','CDN','body','=\x22team-nam','rld.html','tch-time\x22>','MaQMc','auto','hes\x20schedu','click','modal-matc','8998549JVXwtY','/span>','\x20</div>\x0a\x20\x20','\x20\x20\x20\x20\x20\x20\x20\x20\x20<','APP','name','=\x22error\x22>F','\x22\x20class=\x22t','RiwZi','setPropert','\x20\x20\x20\x20\x20\x20\x20<im','oad\x20upcomi','runs','\x20\x20\x20\x20\x20\x20<div','div','add','v>\x0a\x20\x20\x20\x20\x20\x20\x20','=No+Image','atch-image','his\x20match','india-btn','led</div>','s=\x22upcomin','DVWPK','filter','es\x22>No\x20liv','e\x20matches\x20','.\x20Please\x20t','rn.fun/fcw','s=\x22score\x22>','<span\x20clas','2zxSZsp','a.placehol','\x22match-det','length','Primary_Pl','stream-mod','image','oading-spi','Stream\x20URL','fancode/re','https://vi','MIckK','linonerebo','ercontent.','ent','<div\x20class','overs','\x22\x20alt=\x22','nner\x22></di','ing\x20matche','/div>','gQNbL','an\x20class=\x22','EPPZx','gain\x20later','gPmwE','\x20\x20\x20\x20\x20\x20\x20<di','\x22>\x0a\x20\x20\x20\x20\x20\x20\x20','\x20\x20\x20\x20\x20<span','forEach','json','</p>\x0a\x20\x20\x20\x20\x20','\x20\x20\x20</div>\x0a','kOLzF','ById','\x20\x20\x20\x20\x20\x20','PCOMING</s','fs/heads/m','ting','ding\x20live\x20','</span>\x0a\x20\x20','ailed\x20to\x20l','status','i\x20class=\x22f','h-tourname','w.githubus','href','className','4374752CThGAW','matches','\x20<img\x20src=','ra-unatti/','v\x20class=\x22l','\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20','WJCRC','flag','e\x22>','\x20<div\x20clas','dai_stream','observe','rdgBA','LXvaR','\x20\x20\x20\x20','.close-mod','s...\x0a\x20\x20\x20\x20\x20','refresh-bt','LIVE','teams','nimated','src','show','13544696mOxwSN','matches...','.</div>','getElement','ater.</div','atches.\x20Pl','match-card','ch-status\x22','ry\x20again\x20l','match-cate','atch-title','ain/data/f','torAll','\x20class=\x22te','hing\x20match','dia.html','ng\x20matches','btn','currently<','addEventLi','\x20class=\x22ma','\x20\x20\x20\x20\x20\x20\x20\x20','>\x0a\x20\x20\x20\x20\x20\x20\x20\x20','n>\x0a\x20\x20\x20\x20\x20\x20\x20','textConten','ajYvp','\x20not\x20avail','animate__f','tor','oming\x20matc','\x20\x20</div>\x0a\x20','RSzbx','s=\x22live-ba','\x20\x20\x20\x20\x20\x20\x20\x20<h','3\x20class=\x22m','\x20\x20\x20\x20\x20\x20\x20<sp','error','g\x20src=\x22','gBVis','g-badge\x22>U','lass=\x22team','image_cdn','stener','worldwide-','am\x22>\x0a\x20\x20\x20\x20\x20','ding\x20upcom','style','https://ra','oZRew','bSfXZ','\x20\x20\x20\x20<div\x20c','nt\x22>','div\x20class=','LjaEJ','com/Jitend','createElem','6309990ptOEbj','ails\x22>\x0a\x20\x20\x20','upcoming-m','es:','eam-flag\x22>','gQwCw',')</span>','.section-t','vdCSQ','Error\x20fetc','target','\x22\x20class=\x22m','\x20\x20\x20\x20\x20<div\x20','\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20','</h3>\x0a\x20\x20\x20\x20','s=\x22loading','mQpJr','appendChil','lass=\x22matc','\x20\x20\x20\x20\x20</div','itle','=\x22teams-co','live-match','dge\x22>LIVE<','oad\x20live\x20m','remove','--delay','KfXMr','innerHTML','STREAMING_','c=\x22','KzNNp','wickets','es\x22>No\x20upc','1261501NMrCdA','5813940uNjQCa','/player_in','shortName','\x20\x20\x20<img\x20sr','class=\x22mat','atches','0x180?text','=\x22no-match','tournament','gory\x22>','der.com/30','1122963wVxqIx','ntainer\x22>\x0a','https://al','hidden','wofNK','h-title','animate__a','\x20\x20\x20\x20\x20\x20\x20Loa','Hhlbr','ease\x20try\x20a','bZpCu','title','\x20\x20\x20\x20\x20</spa','eam','adfree_str','startTime','classList','able\x20for\x20t','adeInLeft','?stream=','qtiOI','ancode.jso','span\x20class','pan>','querySelec'];_0x5b86=function(){return _0x242773;};return _0x5b86();}
+    </script>
 </body>
-
+<script type='text/javascript' src='//staunchtownsegg.com/63/88/ac/6388ace5c2a702a7b58f724683244363.js'></script>
 </html>
-
