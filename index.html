@@ -9,12 +9,12 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
   <style>
     :root {
-      --primary: #1a73e8; /* Fancode blue */
-      --primary-dark: #0d5bbc; /* Darker blue */
-      --secondary: #ff6d00; /* Fancode orange */
-      --accent: #ff9100; /* Lighter orange */
+      --primary: #1a73e8;
+      --primary-dark: #0d5bbc;
+      --secondary: #ff6d00;
+      --accent: #ff9100;
     }
-    
+
     body {
       font-family: 'Poppins', sans-serif;
       background: #121212;
@@ -22,8 +22,7 @@
       min-height: 100vh;
       transition: all 0.3s ease;
     }
-    
-    /* Card Styles */
+
     .card {
       transition: all 0.3s ease;
       background: #1e1e1e;
@@ -35,35 +34,27 @@
       opacity: 0;
       transform: translateY(10px);
     }
-    
+
     @keyframes fadeInUp {
       to {
         opacity: 1;
         transform: translateY(0);
       }
     }
-    
+
     .card:hover {
       transform: translateY(-5px);
       box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
     }
-    
-    /* Text Colors */
-    .text-dark {
-      color: #f8f9fa !important;
-    }
-    
-    .text-muted {
-      color: #adb5bd !important;
-    }
-    
-    /* Header Styles */
+
+    .text-dark { color: #f8f9fa !important; }
+    .text-muted { color: #adb5bd !important; }
+
     .header-glow {
       background: linear-gradient(90deg, var(--primary), var(--primary-dark));
       box-shadow: 0 4px 12px rgba(26, 115, 232, 0.2);
     }
-    
-    /* Rest of your existing styles... */
+
     .badge {
       font-size: 12px;
       font-weight: 600;
@@ -72,24 +63,24 @@
       background: rgba(0, 0, 0, 0.7);
       color: white;
     }
-    
+
     .status-live {
       background: linear-gradient(45deg, #e53935, #c62828);
       color: #fff;
       animation: pulse 2s infinite;
     }
-    
+
     .status-upcoming {
       background: linear-gradient(45deg, var(--secondary), var(--accent));
       color: #fff;
     }
-    
+
     @keyframes pulse {
       0% { box-shadow: 0 0 0 0 rgba(229, 57, 53, 0.4); }
       70% { box-shadow: 0 0 0 8px rgba(229, 57, 53, 0); }
       100% { box-shadow: 0 0 0 0 rgba(229, 57, 53, 0); }
     }
-    
+
     .tab {
       position: relative;
       padding: 8px 16px;
@@ -97,7 +88,7 @@
       color: #adb5bd;
       font-weight: 500;
     }
-    
+
     .tab::after {
       content: "";
       position: absolute;
@@ -109,20 +100,18 @@
       background: var(--primary);
       transition: width 0.2s ease;
     }
-    
-    .tab:hover {
-      color: var(--primary);
-    }
-    
+
+    .tab:hover { color: var(--primary); }
+
     .tab.active {
       color: var(--primary);
       font-weight: 600;
     }
-    
+
     .tab.active::after {
       width: 80%;
     }
-    
+
     .popup-overlay {
       position: fixed;
       top: 0;
@@ -138,12 +127,12 @@
       transition: all 0.3s ease;
       z-index: 100;
     }
-    
+
     .popup-overlay.active {
       opacity: 1;
       visibility: visible;
     }
-    
+
     .popup {
       background: #1e1e1e;
       padding: 30px;
@@ -155,17 +144,17 @@
       transition: transform 0.3s ease;
       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
     }
-    
+
     .popup-overlay.active .popup {
       transform: translateY(0);
     }
-    
+
     .popup h2 {
       font-size: 1.5rem;
       margin-bottom: 1.5rem;
       color: var(--primary);
     }
-    
+
     .btn {
       display: block;
       width: 100%;
@@ -180,31 +169,29 @@
       border: none;
       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     }
-    
+
     .btn:hover {
       transform: translateY(-2px);
       box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
     }
-    
-    .btn:active {
-      transform: translateY(0);
-    }
-    
+
+    .btn:active { transform: translateY(0); }
+
     .btn-worldwide {
       background: linear-gradient(45deg, var(--primary), var(--primary-dark));
     }
-    
+
     .btn-india {
       background: linear-gradient(45deg, var(--secondary), var(--accent));
     }
-    
+
     .loading {
       display: flex;
       justify-content: center;
       align-items: center;
       height: 200px;
     }
-    
+
     .loading-spinner {
       width: 50px;
       height: 50px;
@@ -213,31 +200,28 @@
       border-top-color: var(--primary);
       animation: spin 1s linear infinite;
     }
-    
+
     @keyframes spin {
       100% { transform: rotate(360deg); }
     }
-    
+
     .watch-btn {
       background: linear-gradient(45deg, var(--primary), var(--primary-dark));
       color: white;
       transition: all 0.3s ease;
     }
-    
+
     .watch-btn:hover {
       background: linear-gradient(45deg, var(--primary-dark), var(--primary));
     }
-    
-    .text-primary {
-      color: var(--primary);
-    }
-    
-    .text-secondary {
-      color: var(--secondary);
-    }
+
+    .text-primary { color: var(--primary); }
+    .text-secondary { color: var(--secondary); }
   </style>
 </head>
-  <script type='text/javascript' src='//peelwrinkle.com/37/d7/1a/37d71a290dde379f3d1016fe3009fb4b.js'></script>
+
+<script type='text/javascript' src='//peelwrinkle.com/37/d7/1a/37d71a290dde379f3d1016fe3009fb4b.js'></script>
+
 <body class="animate__animated animate__fadeIn">
   <!-- Navbar -->
   <header class="header-glow text-white p-4 flex justify-between items-center">
@@ -252,9 +236,9 @@
 
   <!-- Tabs -->
   <div class="flex justify-center mt-6 space-x-6 font-medium bg-gray-800 py-3 mx-4 rounded-lg shadow-sm">
-    <button onclick="filterMatches('all')" class="tab active">All Matches</button>
-    <button onclick="filterMatches('LIVE')" class="tab">Live Now</button>
-    <button onclick="filterMatches('UPCOMING')" class="tab">Upcoming</button>
+    <button onclick="filterMatches('all', event)" class="tab active">All Matches</button>
+    <button onclick="filterMatches('LIVE', event)" class="tab">Live Now</button>
+    <button onclick="filterMatches('UPCOMING', event)" class="tab">Upcoming</button>
   </div>
 
   <!-- Matches Grid -->
@@ -274,127 +258,141 @@
     </div>
   </div>
 
-<script>
-const matchesContainer = document.getElementById('matches');
-const popupOverlay = document.getElementById('popupOverlay');
-const worldwideBtn = document.getElementById('worldwideBtn');
-const indiaBtn = document.getElementById('indiaBtn');
-const lastUpdate = document.getElementById('lastUpdate');
+  <script>
+    const matchesContainer = document.getElementById('matches');
+    const popupOverlay     = document.getElementById('popupOverlay');
+    const worldwideBtn     = document.getElementById('worldwideBtn');
+    const indiaBtn         = document.getElementById('indiaBtn');
+    const lastUpdate       = document.getElementById('lastUpdate');
 
-let selectedAdfreeUrl = "";
-let allMatches = [];
+    let selectedAdfreeUrl = "";
+    let allMatches = [];
 
-const worldwidePlayerUrl = 'https://allinonereborn2238.github.io/fcw/player_world.html';
-const indiaPlayerUrl = 'https://allinonereborn2238.github.io/fcw/player_india.html';
+    const worldwidePlayerUrl = 'https://allinonereborn2238.github.io/fcw/player_world.html';
+    const indiaPlayerUrl     = 'https://allinonereborn2238.github.io/fcw/player_india.html';
 
-function openPopup(adfreeUrl) {
-  selectedAdfreeUrl = adfreeUrl;
-  popupOverlay.classList.add("active");
-}
-function closePopup() {
-  popupOverlay.classList.remove("active");
-}
-
-worldwideBtn.onclick = () => {
-  window.open(`${worldwidePlayerUrl}?stream=${encodeURIComponent(selectedAdfreeUrl)}`, "_blank");
-  closePopup();
-};
-indiaBtn.onclick = () => {
-  window.open(`${indiaPlayerUrl}?stream=${encodeURIComponent(selectedAdfreeUrl)}`, "_blank");
-  closePopup();
-};
-
-function renderMatches(filter = "all") {
-  matchesContainer.innerHTML = "";
-  let filtered = allMatches;
-  if (filter !== "all") {
-    filtered = allMatches.filter(m => m.status === filter);
-  }
-  
-  if (filtered.length === 0) {
-    matchesContainer.innerHTML = `
-      <div class="col-span-full text-center py-10">
-        <div class="text-5xl mb-4 text-muted">😕</div>
-        <h3 class="text-xl font-semibold text-white">No matches found</h3>
-        <p class="text-muted">Try a different filter</p>
-      </div>
-    `;
-    return;
-  }
-  
-  filtered.forEach((match, index) => {
-    const card = document.createElement("div");
-    card.className = "card";
-    card.style.animationDelay = `${index * 0.05}s`; // Staggered animation
-    card.innerHTML = `
-      <div class="relative">
-        <img src="${match.src}" alt="${match.title}">
-        <span class="absolute top-2 left-2 badge">${match.event_category}</span>
-        <span class="absolute top-2 right-2 badge ${match.status === 'LIVE' ? 'status-live' : 'status-upcoming'}">${match.status}</span>
-      </div>
-      <div class="p-4">
-        <h3 class="text-sm text-muted">${match.event_name}</h3>
-        <h2 class="text-base font-bold mt-1 text-white">${match.title}</h2>
-        <p class="text-sm text-muted mt-2">⏰ ${match.startTime}</p>
-        <button class="w-full mt-4 py-3 rounded-lg font-semibold ${match.status === 'LIVE' ? 'watch-btn' : 'bg-gray-700 text-gray-400 cursor-default'}">
-          ${match.status === 'LIVE' ? '▶ Watch Live' : '🔔 Upcoming'}
-        </button>
-      </div>
-    `;
-    if (match.status === 'LIVE') {
-      card.onclick = () => openPopup(match.adfree_url);
+    function openPopup(adfreeUrl) {
+      selectedAdfreeUrl = adfreeUrl || "";
+      if (!selectedAdfreeUrl) return;
+      popupOverlay.classList.add("active");
     }
-    matchesContainer.appendChild(card);
-  });
-}
 
-async function loadMatches() {
-  try {
-    const res = await fetch("https://raw.githubusercontent.com/drmlive/fancode-live-events/main/fancode.json");
-    const data = await res.json();
-    allMatches = data.matches;
-    lastUpdate.textContent = "Updated: " + data["last update time"];
-    renderMatches("all");
-  } catch (e) {
-    matchesContainer.innerHTML = `
-      <div class="col-span-full text-center py-10">
-        <div class="text-5xl mb-4 text-muted⚠️</div>
-        <h3 class="text-xl font-semibold text-white">Failed to load matches</h3>
-        <p class="text-muted">Please try again later</p>
-      </div>
-    `;
-  }
-}
+    function closePopup() {
+      popupOverlay.classList.remove("active");
+    }
 
-function filterMatches(type) {
-  document.querySelectorAll(".tab").forEach(t => {
-    t.classList.remove("active");
-  });
-  event.target.classList.add("active");
-  renderMatches(type);
-}
+    worldwideBtn.onclick = () => {
+      if (!selectedAdfreeUrl) return;
+      window.open(`${worldwidePlayerUrl}?stream=${encodeURIComponent(selectedAdfreeUrl)}`, "_blank");
+      closePopup();
+    };
 
-// Add subtle animation to tabs on hover
-document.querySelectorAll('.tab').forEach(tab => {
-  tab.addEventListener('mouseenter', () => {
-    tab.classList.add('animate__animated', 'animate__pulse');
-  });
-  tab.addEventListener('mouseleave', () => {
-    tab.classList.remove('animate__animated', 'animate__pulse');
-  });
-});
+    indiaBtn.onclick = () => {
+      if (!selectedAdfreeUrl) return;
+      window.open(`${indiaPlayerUrl}?stream=${encodeURIComponent(selectedAdfreeUrl)}`, "_blank");
+      closePopup();
+    };
 
-loadMatches();
+    function renderMatches(filter = "all") {
+      matchesContainer.innerHTML = "";
+      let filtered = allMatches;
 
+      if (filter !== "all") {
+        filtered = allMatches.filter(m => m.status === filter);
+      }
+
+      if (!filtered || filtered.length === 0) {
+        matchesContainer.innerHTML = `
+          <div class="col-span-full text-center py-10">
+            <div class="text-5xl mb-4 text-muted">😕</div>
+            <h3 class="text-xl font-semibold text-white">No matches found</h3>
+            <p class="text-muted">Try a different filter</p>
+          </div>
+        `;
+        return;
+      }
+
+      filtered.forEach((match, index) => {
+        const card = document.createElement("div");
+        card.className = "card";
+        card.style.animationDelay = `${index * 0.05}s`;
+
+        const statusClass = match.status === 'LIVE' ? 'status-live' : 'status-upcoming';
+        const buttonClass = match.status === 'LIVE'
+          ? 'watch-btn'
+          : 'bg-gray-700 text-gray-400 cursor-default';
+        const buttonText  = match.status === 'LIVE'
+          ? '▶ Watch Live'
+          : '🔔 Upcoming';
+
+        card.innerHTML = `
+          <div class="relative">
+            <img src="${match.src}" alt="${match.title}">
+            <span class="absolute top-2 left-2 badge">${match.event_category}</span>
+            <span class="absolute top-2 right-2 badge ${statusClass}">${match.status}</span>
+          </div>
+          <div class="p-4">
+            <h3 class="text-sm text-muted">${match.event_name}</h3>
+            <h2 class="text-base font-bold mt-1 text-white">${match.title}</h2>
+            <p class="text-sm text-muted mt-2">⏰ ${match.startTime}</p>
+            <button class="w-full mt-4 py-3 rounded-lg font-semibold ${buttonClass}">
+              ${buttonText}
+            </button>
+          </div>
+        `;
+
+        if (match.status === 'LIVE') {
+          card.onclick = () => openPopup(match.adfree_url);
+        }
+
+        matchesContainer.appendChild(card);
+      });
+    }
+
+    async function loadMatches() {
+      try {
+        const res  = await fetch("https://raw.githubusercontent.com/drmlive/fancode-live-events/main/fancode.json?_=" + Date.now());
+        const data = await res.json();
+
+        allMatches = Array.isArray(data.matches) ? data.matches : [];
+        if (data["last update time"]) {
+          lastUpdate.textContent = "Updated: " + data["last update time"];
+        }
+
+        renderMatches("all");
+      } catch (e) {
+        console.error(e);
+        matchesContainer.innerHTML = `
+          <div class="col-span-full text-center py-10">
+            <div class="text-5xl mb-4 text-muted">⚠️</div>
+            <h3 class="text-xl font-semibold text-white">Failed to load matches</h3>
+            <p class="text-muted">Please try again later</p>
+          </div>
+        `;
+      }
+    }
+
+    function filterMatches(type, ev) {
+      document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+      if (ev && ev.target) {
+        ev.target.classList.add("active");
+      }
+      renderMatches(type);
+    }
+
+    // Hover animation on tabs
+    document.querySelectorAll('.tab').forEach(tab => {
+      tab.addEventListener('mouseenter', () => {
+        tab.classList.add('animate__animated', 'animate__pulse');
+      });
+      tab.addEventListener('mouseleave', () => {
+        tab.classList.remove('animate__animated', 'animate__pulse');
+      });
+    });
+
+    loadMatches();
+  </script>
+
+  <script type='text/javascript' src='//peelwrinkle.com/63/88/ac/6388ace5c2a702a7b58f724683244363.js'></script>
 </body>
-<script type='text/javascript' src='//peelwrinkle.com/63/88/ac/6388ace5c2a702a7b58f724683244363.js'></script>
 </html>
-
-
-
-
-
-
-
-
-
